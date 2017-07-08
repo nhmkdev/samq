@@ -20,7 +20,7 @@ $samqCore->addRequest('intro', new InputRequest(
             ->setAdjustments(array(new ClearAllAdjustment()))
     ]));
 
-$samqCore->addRequest('move_sample_center', (new MoveInputRequest(
+$samqCore->addRequest('move_sample_center', MoveInputRequest::withCommand(
     'Location Marker: Center<br>',
     'move_sample_north',
     'move_sample_west',
@@ -34,7 +34,6 @@ $samqCore->addRequest('move_sample_center', (new MoveInputRequest(
             new Adjustment('key', false),
             new Adjustment('door_unlocked', true)))
     )
-    )
     ->setConditionalText(new ConditionalText('There is a locked door',
         new EqualityCondition('door_unlocked', NULL)))
 );
@@ -45,7 +44,7 @@ $samqCore->addRequest('sample_complete', new InputRequest(
         new Response('Return to the movement sample', 'move_sample_center', null),
     ]));
 
-$samqCore->addRequest('move_sample_north', (new MoveInputRequest(
+$samqCore->addRequest('move_sample_north', MoveInputRequest::withCommand(
     'Location Marker: North<br>',
     NULL,
     NULL,
@@ -56,7 +55,7 @@ $samqCore->addRequest('move_sample_north', (new MoveInputRequest(
         ->setAdjustments(array(
             new Adjustment('key', true),
             new Adjustment('key_taken', true)))
-    ))
+    )
     ->setConditionalText(new ConditionalText('There is a key here.',
         new EqualityCondition('key_taken', NULL)))
 );
@@ -77,12 +76,16 @@ $samqCore->addRequest('move_sample_east', new MoveOnlyInputRequest(
     NULL
 ));
 
-$samqCore->addRequest('move_sample_south', new MoveOnlyInputRequest(
+$samqCore->addRequest('move_sample_south', MoveInputRequest::withAdditionalResponses(
     'Location Marker: South<br>',
     'move_sample_center',
     NULL,
     NULL,
-    NULL
+    NULL,
+    array(
+        new Response("Warp North", 'move_sample_north'),
+        new Response("Warp East", 'move_sample_east')
+    )
 ));
 
 function render()
