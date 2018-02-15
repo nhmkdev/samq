@@ -24,20 +24,21 @@
 // SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
 
-class Adjustment
-{
-    protected $variable;
-    protected $newValue;
+include_once dirname(__FILE__) . '/../core/core.php';
+include_once dirname(__FILE__) . '/iCondition.php';
 
-    function __construct($variable, $newValue) {
+class NotEqualityCondition implements iCondition
+{
+    private $variable;
+    private $mustNotEqualValue;
+
+    function __construct($variable, $mustNotEqualValue) {
         $this->variable = $variable;
-        $this->newValue = $newValue;
+        $this->mustNotEqualValue = $mustNotEqualValue;
     }
 
-    public function performAdjustment()
+    public function isMet()
     {
-        // TODO: debug option on SamQ
-        //echo 'setting '.$this->variable.' to '.$this->newValue;
-        $_SESSION[$this->variable] = $this->newValue;
+        return !isset($_SESSION[$this->variable]) || $_SESSION[$this->variable] != $this->mustNotEqualValue;
     }
 }

@@ -24,20 +24,26 @@
 // SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
 
-class Adjustment
-{
-    protected $variable;
-    protected $newValue;
+include_once dirname(__FILE__) . '/../core/core.php';
+include_once dirname(__FILE__) . '/../condition/iCondition.php';
 
-    function __construct($variable, $newValue) {
-        $this->variable = $variable;
-        $this->newValue = $newValue;
+class ConditionalElseText extends ConditionalText
+{
+    private $elseText;
+
+    function __construct($text, $elseText, $conditions) {
+        $this->elseText = $elseText;
+        parent::__construct($text, $conditions);
     }
 
-    public function performAdjustment()
-    {
-        // TODO: debug option on SamQ
-        //echo 'setting '.$this->variable.' to '.$this->newValue;
-        $_SESSION[$this->variable] = $this->newValue;
+    public function getConditionalText(){
+        if(isset($this->conditions)){
+            foreach($this->conditions as $condition){
+                if(!$condition->isMet()){
+                    return $this->elseText;
+                }
+            }
+        }
+        return $this->text;
     }
 }

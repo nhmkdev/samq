@@ -24,20 +24,24 @@
 // SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
 
-class Adjustment
-{
-    protected $variable;
-    protected $newValue;
+include_once dirname(__FILE__).'/Adjustment.php';
 
-    function __construct($variable, $newValue) {
-        $this->variable = $variable;
-        $this->newValue = $newValue;
+class IncrementAdjustment extends Adjustment
+{
+    private $incrementAmount;
+
+    function __construct($variable, $incrementAmount) {
+        parent::__construct($variable, NULL);
+        $this->incrementAmount = $incrementAmount;
     }
 
     public function performAdjustment()
     {
-        // TODO: debug option on SamQ
-        //echo 'setting '.$this->variable.' to '.$this->newValue;
-        $_SESSION[$this->variable] = $this->newValue;
+        $newValue = $this->incrementAmount;
+        if(isset($_SESSION[$this->variable]))
+        {
+            $newValue = $_SESSION[$this->variable] + $this->incrementAmount;
+        }
+        $_SESSION[$this->variable] = $newValue;
     }
 }

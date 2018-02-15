@@ -31,11 +31,17 @@ class InputRequest
 {
     protected $text;
     public $responses;
+    private $adjustments;
     private $conditionalText;
+    private $requestIdentifier;
 
-    function __construct($text, $responseSet) {
+    function __construct($text, $responses) {
         $this->text = $text;
-        $this->responses = $responseSet;
+        $this->responses = InputRequest::getArrayFromArg($responses, NULL);
+    }
+
+    public static function with($text, $responseSet){
+        return new InputRequest($text, $responseSet);
     }
 
     public function processId($id, $samqCore)
@@ -49,18 +55,25 @@ class InputRequest
         }
     }
 
+    public function setAdjustments($adjustments) {
+        $this->adjustments = InputRequest::getArrayFromArg($adjustments, NULL);
+        return $this;
+    }
+
     public function setConditionalText($conditionalText){
         $this->conditionalText = InputRequest::getArrayFromArg($conditionalText, NULL);
         return $this;
     }
 
-    public function render()
+    public function render($samqCore)
     {
+        $this->makeAdjustments();
+
         echo'<p>'
             .$this->text
             .$this->getConditionalText()
             .'</p>'.DBG_EOL;
-        echo '<p><form action="/samq/sample/" method="POST">'.DBG_EOL;
+        echo '<p><form action="'.$samqCore->getPostPath().'" method="POST">'.DBG_EOL;
 
         foreach ($this->responses as $response)
         {
@@ -72,6 +85,19 @@ class InputRequest
         echo '</form></p>'.DBG_EOL;
     }
 
+    protected function makeAdjustments()
+    {
+        if(!isset($this->adjustments)) {
+            return;
+        }
+
+        //var_dump($this->adjustments);
+
+        foreach($this->adjustments as $adjustment) {
+            $adjustment->performAdjustment();
+        }
+    }
+
     protected function getConditionalText() {
         $str = '';
         if(isset($this->conditionalText)){
@@ -81,6 +107,24 @@ class InputRequest
         }
         return $str;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getRequestIdentifier()
+    {
+        return $this->requestIdentifier;
+    }
+
+    /**
+     * @param mixed $requestIdentifier
+     */
+    public function setRequestIdentifier($requestIdentifier)
+    {
+        $this->requestIdentifier = $requestIdentifier;
+    }
+
+
 
     // TODO: this is duplicated now
     private static function getArrayFromArg($arg, $default) {

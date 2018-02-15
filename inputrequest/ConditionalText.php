@@ -30,7 +30,7 @@ include_once dirname(__FILE__) . '/../condition/iCondition.php';
 class ConditionalText
 {
     public $text;
-    private $conditions;
+    protected $conditions;
 
     function __construct($text, $conditions) {
         $this->text = $text;

@@ -37,12 +37,15 @@ class MoveInputRequest extends InputRequest
     private $additionalResponses;
 
     function __construct($text, $northResult, $westResult, $eastResult, $southResult, $commandResponse, $additionalResponses) {
-        $this->northResponse = MoveInputRequest::createMoveResponse("Move North", $northResult);
-        $this->westResponse = MoveInputRequest::createMoveResponse("Move West", $westResult);
-        $this->eastResponse = MoveInputRequest::createMoveResponse("Move East", $eastResult);
-        $this->southResponse = MoveInputRequest::createMoveResponse("Move South", $southResult);
+
+        $this->northResponse = $northResult instanceof Response ? $northResult : MoveInputRequest::createMoveResponse('n', $northResult);
+        $this->westResponse = $westResult instanceof Response ? $westResult : MoveInputRequest::createMoveResponse('w', $westResult);
+        $this->eastResponse = $eastResult instanceof Response ? $eastResult : MoveInputRequest::createMoveResponse('e', $eastResult);
+        $this->southResponse = $southResult instanceof Response ? $southResult : MoveInputRequest::createMoveResponse('s', $southResult);
         $this->commandResponse = $commandResponse;
         $this->additionalResponses = MoveInputRequest::getArrayFromArg($additionalResponses, NULL);
+
+        //var_dump($this);
 
         $constructorResponses = array(
             $this->northResponse,
@@ -69,8 +72,24 @@ class MoveInputRequest extends InputRequest
         return new MoveInputRequest($text, $northResult, $westResult, $eastResult, $southResult, NULL, $additionalResponses);
     }
 
-    private static function createMoveResponse($text, $requestId){
-        return new Response($text, $requestId);
+    public static function createMoveResponse($direction, $requestId){
+        $text = 'unknown';
+        switch($direction)
+        {
+            case 'n':
+                $text = 'North';
+                break;
+            case 's':
+                $text = 'South';
+                break;
+            case 'w':
+                $text = 'West';
+                break;
+            case 'e':
+                $text = 'East';
+                break;
+        }
+        return new Response('Move '.$text, $requestId);
     }
 
     private static function getArrayFromArg($arg, $default) {
@@ -85,9 +104,31 @@ class MoveInputRequest extends InputRequest
         return $default;
     }
 
-    public function render()
+    public function getNorthResponse()
     {
-        echo '<p><form action="/samq/sample/" method="POST">'.DBG_EOL;
+        return $this->northResponse;
+    }
+
+    public function getWestResponse()
+    {
+        return $this->westResponse;
+    }
+
+    public function getEastResponse()
+    {
+        return $this->eastResponse;
+    }
+
+    public function getSouthResponse()
+    {
+        return $this->northResponse;
+    }
+
+    public function render($samqCore)
+    {
+        $this->makeAdjustments();
+
+        echo '<p><form action="'.$samqCore->getPostPath().'" method="POST">'.DBG_EOL;
 
         // Build a table with 4 columns, the 3x3 grid holds the directions and the command.
         // the last row contains the request
@@ -117,14 +158,19 @@ class MoveInputRequest extends InputRequest
         echo '<td></td>'.DBG_EOL;
         echo '</tr>'.DBG_EOL;
 
+        // originally the conditional text went into the table... messes up the buttons badly
+        /*
         echo '<tr>'.DBG_EOL;
         echo '<td colspan="4">'
             .$this->text
             .$this->getConditionalText()
             .'</td>'.DBG_EOL;
         echo '</tr>'.DBG_EOL;
-
+*/
         echo '</table>'.DBG_EOL;
+        echo $this->text
+        .$this->getConditionalText();
+
         echo '<br>'.DBG_EOL;
         if(isset($this->additionalResponses)) {
             foreach ($this->additionalResponses as $response) {

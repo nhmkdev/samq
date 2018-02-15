@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 define('SAMQ_DESTINATION', 'destination');
+define('SAMQ_REQUESTID', 'requestid');
 define('SAMQ_REQUESTCODE', 'jumpcode');
 define("DEBUG_MODE", true);
 
@@ -64,21 +65,32 @@ class SAMQCore
     private $responseTable = array(); // response id R + hash(requestId + index) -> response
     private $hashSalt;
     private $defaultDestinationId;
+    private $postPath;
 
-    function __construct($hashSalt, $defaultDestinationId) {
+    function __construct($hashSalt, $defaultDestinationId, $postPath) {
         $this->hashSalt = $hashSalt;
         $this->defaultDestinationId = $defaultDestinationId;
+        $this->postPath = $postPath;
     }
 
     public function addRequest($id, $request)
     {
+        if(isset($this->requestTable[$id]))
+        {
+            echo '<br>Duplicate request being added: '.$id;
+        }
         $this->requestTable[$id] = $request;
+        $request->setRequestIdentifier($id);
         $request->processId($id, $this);
     }
 
-    public function addRequestCode($id, $requestCode)
+    /**
+     * @param $requestCode The code to jump to the request
+     * @param $requestId The destination request identifier
+     */
+    public function addRequestCode($requestCode, $requestId)
     {
-        $this->requestCodeTable[$id] = $requestCode;
+        $this->requestCodeTable[$requestCode] = $requestId;
     }
 
     public function addResponse($id, $response)
@@ -101,21 +113,28 @@ class SAMQCore
     }
 
     public function getDestinationInfo() {
+        $requestId = $_POST[SAMQ_REQUESTID];
         $requestCodeId = $_POST[SAMQ_REQUESTCODE];
 
+        // direct request identifier
+        if(isset($requestId))
+        {
+            $destinationId = $this->hash($requestId);
+        }
         // check for a request code
-        if(isset($requestCodeId)) {
-            $requestCode = $this->getRequestCode($requestCodeId);
+        else if(isset($requestCodeId)) {
+            $requestCode = $this->getRequestId($requestCodeId);
             if(isset($requestCode)) {
-                var_dump($requestCode);
+                //var_dump($requestCode);
                 $destinationId = $this->hash($requestCode);
-                echo '....';
-                var_dump($destinationId);
+                //echo '....';
+                //var_dump($destinationId);
             }
             else{
                 return new InvalidRequestCode($requestCodeId);
             }
         }
+        // standard destination
         else{
             $destinationId =  $_POST[SAMQ_DESTINATION];
 
@@ -137,7 +156,7 @@ class SAMQCore
         return new DestinationInquiry($destinationId, $this->requestTable[$destinationId]);
     }
 
-    public function initializeSequenceTable() {
+    public function initializeSequenceTable($performReverseLookup) {
 
         //$sequenceAliases[$id.$suffix] = $id;
         foreach($this->requestAliases as $alias => $sequence) {
@@ -154,10 +173,10 @@ class SAMQCore
             $newTable[$this->hash($key)] = $request;
             foreach ($request->responses as $response)
             {
-                if(isset($response->sequenceResult) &&
-                    !isset($this->requestTable[$response->sequenceResult]))
+                if(isset($response->requestId) &&
+                    !isset($this->requestTable[$response->requestId]))
                 {
-                    echo '<br>Found a missing sequenceResult:'.$response->sequenceResult;
+                    echo '<br>Found a missing requestId:'.$response->requestId.' on Request: '.$request->getRequestIdentifier();
                     $validData = false;
                 }
             }
@@ -168,23 +187,51 @@ class SAMQCore
         }
 
         $this->requestTable = $newTable;
+
+        // confirm that every requestId is used in a response.
+        if($performReverseLookup)
+        {
+            $allRequestsIdsReferencedByResponses = array();
+            foreach($this->requestTable as $key => $request)
+            {
+                foreach ($request->responses as $response)
+                {
+                    if (isset($response->requestId))
+                    {
+                        $allRequestsIdsReferencedByResponses[$response->requestId] = true;
+                    }
+                }
+            }
+            foreach($this->requestTable as $key => $request)
+            {
+                if(!isset($allRequestsIdsReferencedByResponses[$request->getRequestIdentifier()]))
+                {
+                    echo '<br>Found an unreferenced requestId:['.$request->getRequestIdentifier().']';
+                }
+            }
+        }
     }
 
     public function hash($str) {
         return md5($this->hashSalt.$str);
     }
 
-    private function getRequestCode($requestCode) {
+    private function getRequestId($requestCode) {
         if(!isset($requestCode)) {
             return NULL;
         }
 
         $requestCode = strtolower($requestCode);
-
+        //var_dump($this->requestCodeTable);
         if(isset($this->requestCodeTable[$requestCode])) {
             return $this->requestCodeTable[$requestCode];
         }
         return NULL;
+    }
+
+    public function getPostPath()
+    {
+        return $this->postPath;
     }
 }
 
