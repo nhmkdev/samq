@@ -40,6 +40,7 @@ include_once dirname(__FILE__) . '/../inputrequest/ConditionalText.php';
 include_once dirname(__FILE__) . '/../inputrequest/ConditionalElseText.php';
 include_once dirname(__FILE__) . '/../inputrequest/InputRequest.php';
 include_once dirname(__FILE__) . '/../inputrequest/MoveInputRequest.php';
+include_once dirname(__FILE__) . '/../inputrequest/MoveInputRequestUtils.php';
 include_once dirname(__FILE__) . '/../inputrequest/MoveOnlyInputRequest.php';
 
 include_once dirname(__FILE__) . '/../response/Response.php';
