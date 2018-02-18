@@ -64,6 +64,59 @@ class MoveInputRequest extends InputRequest
         parent::__construct($text, $constructorResponses);
     }
 
+    private function updateResponses()
+    {
+        $updatedResponses = array(
+            $this->northResponse,
+            $this->westResponse,
+            $this->eastResponse,
+            $this->southResponse
+        );
+        if(isset($this->commandResponse)) {
+            array_push($updatedResponses, $this->commandResponse);
+        }
+        if(isset($this->additionalResponses)) {
+            $updatedResponses = array_merge($updatedResponses, $this->additionalResponses);
+        }
+        $this->responses = $updatedResponses;
+    }
+
+    public function setNorthResponse($response)
+    {
+        $this->northResponse = $response;
+        $this->updateResponses();
+    }
+
+    public function setWestResponse($response)
+    {
+        $this->westResponse = $response;
+        $this->updateResponses();
+    }
+
+    public function setEastResponse($response)
+    {
+        $this->eastResponse = $response;
+        $this->updateResponses();
+    }
+
+    public function setSouthResponse($response)
+    {
+        $this->southResponse = $response;
+        $this->updateResponses();
+    }
+
+    public function setCommandResponse($response)
+    {
+        $this->commandResponse = $response;
+        $this->updateResponses();
+    }
+
+    public function setAdditionalResponse($responses)
+    {
+        $this->additionalResponses = MoveInputRequest::getArrayFromArg($responses, NULL);
+        $this->updateResponses();
+    }
+
     public static function withCommand($text, $northResult, $westResult, $eastResult, $southResult, $commandResponse){
         return new MoveInputRequest($text, $northResult, $westResult, $eastResult, $southResult, $commandResponse, NULL);
     }
