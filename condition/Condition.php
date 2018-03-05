@@ -24,7 +24,14 @@
 // SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
 
-interface iCondition
+abstract class Condition
 {
-    public function isMet();
+    protected $variable;
+    protected $session_store = DEFAULT_STORE;
+
+    function __construct($variable) {
+        $this->variable = $variable;
+    }
+
+    public abstract function isMet();
 }

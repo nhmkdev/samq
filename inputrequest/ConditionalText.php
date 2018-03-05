@@ -37,6 +37,11 @@ class ConditionalText
         $this->conditions = ConditionalText::getArrayFromArg($conditions, NULL);
     }
 
+    public static function with($text, $conditions)
+    {
+        return new ConditionalText($text, $conditions);
+    }
+
     public function getConditionalText(){
         if(isset($this->conditions)){
             foreach($this->conditions as $condition){

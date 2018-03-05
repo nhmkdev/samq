@@ -48,6 +48,10 @@ class Response
         $this->requestId = $requestId;
     }
 
+    public static function with($text, $requestId) {
+        return new Response($text, $requestId);
+    }
+
     public function setAdjustments($adjustments) {
         $this->adjustments = Response::getArrayFromArg($adjustments, NULL);
         return $this;
@@ -116,6 +120,8 @@ class Response
     public function processId($requestId, $idx, $samqCore)
     {
         $this->id = $requestId.$idx;
+
+        //echo 'processId: '.$requestId.' :: '.$idx.'<br>';
 
         $this->postValue =
             'R'.

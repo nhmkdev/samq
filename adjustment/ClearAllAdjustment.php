@@ -33,8 +33,24 @@ class ClearAllAdjustment extends Adjustment
         parent::__construct(NULL, NULL);
     }
 
+    public static function withStore($variable, $newValue, $session_store) {
+        $adjustment = new Adjustment($variable, $newValue);
+        $adjustment->session_store = $session_store;
+        return $adjustment;
+    }
+
     public function performAdjustment()
     {
-        session_unset();
+        $this->logAdjusment();
+        unset($_SESSION[$this->session_store]);
+    }
+
+    protected function logAdjusment()
+    {
+        global $samqCore;
+        if($samqCore->isDebugLogAdjustments())
+        {
+            echo 'Clearing ['.$this->session_store.']';
+        }
     }
 }

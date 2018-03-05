@@ -32,6 +32,7 @@ class InputRequest
     protected $text;
     public $responses;
     private $adjustments;
+    private $postAdjustments;
     private $conditionalText;
     private $requestIdentifier;
 
@@ -55,8 +56,23 @@ class InputRequest
         }
     }
 
+    public function setText($newText)
+    {
+        $this->text = $newText;
+    }
+
+    public function getText()
+    {
+        return $this->text;
+    }
+
     public function setAdjustments($adjustments) {
         $this->adjustments = InputRequest::getArrayFromArg($adjustments, NULL);
+        return $this;
+    }
+
+    public function setPostAdjustments($postAdjustments) {
+        $this->postAdjustments = InputRequest::getArrayFromArg($postAdjustments, NULL);
         return $this;
     }
 
@@ -65,6 +81,7 @@ class InputRequest
         return $this;
     }
 
+    // THIS IS OVERRIDEN IN MOVEINPUTREQUEST!! (probably need a wrapper method or something )
     public function render($samqCore)
     {
         $this->makeAdjustments();
@@ -83,6 +100,8 @@ class InputRequest
         }
 
         echo '</form></p>'.DBG_EOL;
+
+        $this->makePostAdjustments();
     }
 
     protected function makeAdjustments()
@@ -94,6 +113,19 @@ class InputRequest
         //var_dump($this->adjustments);
 
         foreach($this->adjustments as $adjustment) {
+            $adjustment->performAdjustment();
+        }
+    }
+
+    protected function makePostAdjustments()
+    {
+        if(!isset($this->postAdjustments)) {
+            return;
+        }
+
+        //var_dump($this->postAdjustments);
+
+        foreach($this->postAdjustments as $adjustment) {
             $adjustment->performAdjustment();
         }
     }

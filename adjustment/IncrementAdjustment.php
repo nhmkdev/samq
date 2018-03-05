@@ -35,13 +35,20 @@ class IncrementAdjustment extends Adjustment
         $this->incrementAmount = $incrementAmount;
     }
 
+    public static function with($variable, $incrementAmount)
+    {
+        return new IncrementAdjustment($variable, $incrementAmount);
+    }
+
     public function performAdjustment()
     {
-        $newValue = $this->incrementAmount;
-        if(isset($_SESSION[$this->variable]))
+        $this->newValue = $this->incrementAmount;
+        $this->initSessionStore();
+        // get the prior value and attempt to increment
+        if(isset($_SESSION[$this->session_store][$this->variable]))
         {
-            $newValue = $_SESSION[$this->variable] + $this->incrementAmount;
+            $this->newValue = $_SESSION[$this->session_store][$this->variable] + $this->incrementAmount;
         }
-        $_SESSION[$this->variable] = $newValue;
+        parent::performAdjustment();
     }
 }

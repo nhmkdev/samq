@@ -67,6 +67,10 @@ class SAMQCore
     private $defaultDestinationId;
     private $postPath;
 
+    // debug/dev functionality
+    private $debug_validateRequestIds = false;
+    private $debug_logAdjustments = false;
+
     function __construct($hashSalt, $defaultDestinationId, $postPath) {
         $this->hashSalt = $hashSalt;
         $this->defaultDestinationId = $defaultDestinationId;
@@ -156,7 +160,7 @@ class SAMQCore
         return new DestinationInquiry($destinationId, $this->requestTable[$destinationId]);
     }
 
-    public function initializeSequenceTable($performReverseLookup) {
+    public function initializeSequenceTable() {
 
         //$sequenceAliases[$id.$suffix] = $id;
         foreach($this->requestAliases as $alias => $sequence) {
@@ -189,7 +193,7 @@ class SAMQCore
         $this->requestTable = $newTable;
 
         // confirm that every requestId is used in a response.
-        if($performReverseLookup)
+        if($this->debug_validateRequestIds)
         {
             $allRequestsIdsReferencedByResponses = array();
             foreach($this->requestTable as $key => $request)
@@ -233,6 +237,40 @@ class SAMQCore
     {
         return $this->postPath;
     }
+
+    /**
+     * @return bool
+     */
+    public function isDebugValidateRequestIds()
+    {
+        return $this->debug_validateRequestIds;
+    }
+
+    /**
+     * @param bool $debug_validateRequestIds
+     */
+    public function setDebugValidateRequestIds($debug_validateRequestIds)
+    {
+        $this->debug_validateRequestIds = $debug_validateRequestIds;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDebugLogAdjustments()
+    {
+        return $this->debug_logAdjustments;
+    }
+
+    /**
+     * @param bool $debug_logAdjustments
+     */
+    public function setDebugLogAdjustments($debug_logAdjustments)
+    {
+        $this->debug_logAdjustments = $debug_logAdjustments;
+    }
+
+
 }
 
 function str_startswith($source, $prefix)

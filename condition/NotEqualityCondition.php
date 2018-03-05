@@ -25,20 +25,24 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 include_once dirname(__FILE__) . '/../core/core.php';
-include_once dirname(__FILE__) . '/iCondition.php';
+include_once dirname(__FILE__) . '/Condition.php';
 
-class NotEqualityCondition implements iCondition
+class NotEqualityCondition extends Condition
 {
-    private $variable;
     private $mustNotEqualValue;
 
     function __construct($variable, $mustNotEqualValue) {
-        $this->variable = $variable;
+        parent::__construct($variable);
         $this->mustNotEqualValue = $mustNotEqualValue;
+    }
+
+    public static function with($variable, $mustNotEqualValue)
+    {
+        return new NotEqualityCondition($variable, $mustNotEqualValue);
     }
 
     public function isMet()
     {
-        return !isset($_SESSION[$this->variable]) || $_SESSION[$this->variable] != $this->mustNotEqualValue;
+        return !isset($_SESSION[$this->session_store][$this->variable]) || $_SESSION[$this->session_store][$this->variable] != $this->mustNotEqualValue;
     }
 }

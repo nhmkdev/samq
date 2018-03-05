@@ -28,16 +28,46 @@ class Adjustment
 {
     protected $variable;
     protected $newValue;
+    protected $session_store = DEFAULT_STORE;
 
     function __construct($variable, $newValue) {
         $this->variable = $variable;
         $this->newValue = $newValue;
     }
 
+    public static function with($variable, $newValue)
+    {
+        return new Adjustment($variable, $newValue);
+    }
+
+    public static function withStore($variable, $newValue, $session_store)
+    {
+        $adjustment = new Adjustment($variable, $newValue);
+        $adjustment->session_store = $session_store;
+        return $adjustment;
+    }
+
     public function performAdjustment()
     {
-        // TODO: debug option on SamQ
-        //echo 'setting '.$this->variable.' to '.$this->newValue;
-        $_SESSION[$this->variable] = $this->newValue;
+        $this->logAdjusment();
+        $this->initSessionStore();
+        $_SESSION[$this->session_store][$this->variable] = $this->newValue;
+    }
+
+    protected function logAdjusment()
+    {
+        global $samqCore;
+        if($samqCore->isDebugLogAdjustments())
+        {
+            echo 'Setting ['.$this->session_store.'] '.$this->variable.' to '.$this->newValue.'<br>';
+        }
+    }
+
+    protected function initSessionStore()
+    {
+        if(!isset($_SESSION[$this->session_store]))
+        {
+            $_SESSION[$this->session_store] = array();
+        }
     }
 }

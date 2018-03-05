@@ -25,20 +25,28 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 include_once dirname(__FILE__) . '/../core/core.php';
-include_once dirname(__FILE__) . '/iCondition.php';
+include_once dirname(__FILE__) . '/Condition.php';
 
-class EqualityCondition implements iCondition
+class EqualityCondition extends Condition
 {
-    private $variable;
     private $requiredValue;
 
     function __construct($variable, $requiredValue) {
-        $this->variable = $variable;
+        parent::__construct($variable);
         $this->requiredValue = $requiredValue;
+    }
+
+    public static function with($variable, $requiredValue)
+    {
+        return new EqualityCondition($variable, $requiredValue);
     }
 
     public function isMet()
     {
-        return $_SESSION[$this->variable] == $this->requiredValue;
+        if(!isset($_SESSION[$this->session_store][$this->variable]))
+        {
+            return false;
+        }
+        return $_SESSION[$this->session_store][$this->variable] == $this->requiredValue;
     }
 }

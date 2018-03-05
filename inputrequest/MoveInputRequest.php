@@ -78,6 +78,15 @@ class MoveInputRequest extends InputRequest
         if(isset($this->additionalResponses)) {
             $updatedResponses = array_merge($updatedResponses, $this->additionalResponses);
         }
+        // TODO: decide where to do validation like this... convenient here
+        /*
+        foreach ($updatedResponses as $response) {
+            if(!$response instanceof Response){
+                echo 'The response is not the expected type';
+                debug_print_backtrace();
+            }
+        }*/
+
         $this->responses = $updatedResponses;
     }
 
@@ -85,36 +94,52 @@ class MoveInputRequest extends InputRequest
     {
         $this->northResponse = $response;
         $this->updateResponses();
+        return $this;
     }
 
     public function setWestResponse($response)
     {
         $this->westResponse = $response;
         $this->updateResponses();
+        return $this;
     }
 
     public function setEastResponse($response)
     {
         $this->eastResponse = $response;
         $this->updateResponses();
+        return $this;
     }
 
     public function setSouthResponse($response)
     {
         $this->southResponse = $response;
         $this->updateResponses();
+        return $this;
     }
 
     public function setCommandResponse($response)
     {
         $this->commandResponse = $response;
         $this->updateResponses();
+        return $this;
     }
 
     public function setAdditionalResponse($responses)
     {
         $this->additionalResponses = MoveInputRequest::getArrayFromArg($responses, NULL);
         $this->updateResponses();
+        return $this;
+    }
+
+    private static function confirmResponseType($obj)
+    {
+        if(!$obj instanceof Response)
+        {
+            echo 'why you do this to me!<br>';
+            return null;
+        }
+        return $obj;
     }
 
     public static function withCommand($text, $northResult, $westResult, $eastResult, $southResult, $commandResponse){
@@ -232,6 +257,8 @@ class MoveInputRequest extends InputRequest
         }
         echo '<br>'.DBG_EOL;
         echo '</form></p>'.DBG_EOL;
+
+        $this->makePostAdjustments();
     }
 
     public function getChoiceButton($responseObject, $suffix) {
@@ -241,11 +268,13 @@ class MoveInputRequest extends InputRequest
         }
 
         $state = $responseObject->getResponseState();
-/*
+
+        /*
         echo '<br>';
         var_dump($responseObject);
         echo '<br>';
-*/
+        */
+
         $rendered = true;
         $enabled = true;
 
@@ -262,7 +291,7 @@ class MoveInputRequest extends InputRequest
                 break;
         }
 
-        //echo $responseObject->text.'::'.$responseObject->requestId.'::'.$state;
+        //echo $responseObject->text.'::'.$responseObject->requestId.'::'.$state.'<br>';
 
         if($rendered) {
            return '<button type="submit" width="60" name="' . SAMQ_DESTINATION . '" value="'
