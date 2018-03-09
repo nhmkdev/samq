@@ -130,6 +130,8 @@ class Response
     }
 
     public function getResponseState() {
+        //echo isset($this->enabledConditions) ? 'set' : 'unset'.'<br>';
+
         // hidden/disabled are ANY conditions pass
         if(Response::anyConditionsPass($this->hiddenConditions, false)){
             return ResponseState::Hidden;
@@ -138,9 +140,15 @@ class Response
             return ResponseState::Disabled;
         }
         // enabled is ALL conditions must pass
-        elseif(Response::allConditionsPass($this->enabledConditions, true)){
+        elseif(Response::allConditionsPass($this->enabledConditions, true)) {
             return ResponseState::Enabled;
         }
+        // if the above failed and there are conditions disabled is the correct state
+        elseif(isset($this->enabledConditions))
+        {
+            return ResponseState::Disabled;
+        }
+        // definitely questionable...
         return ResponseState::Hidden;
     }
 

@@ -204,8 +204,6 @@ class MoveInputRequest extends InputRequest
 
     public function render($samqCore)
     {
-        $this->makeAdjustments();
-
         echo '<p><form action="'.$samqCore->getPostPath().'" method="POST">'.DBG_EOL;
 
         // Build a table with 4 columns, the 3x3 grid holds the directions and the command.

@@ -84,8 +84,6 @@ class InputRequest
     // THIS IS OVERRIDEN IN MOVEINPUTREQUEST!! (probably need a wrapper method or something )
     public function render($samqCore)
     {
-        $this->makeAdjustments();
-
         echo'<p>'
             .$this->text
             .$this->getConditionalText()
@@ -102,6 +100,10 @@ class InputRequest
         echo '</form></p>'.DBG_EOL;
 
         $this->makePostAdjustments();
+    }
+
+    public function preProcess(){
+        $this->makeAdjustments();
     }
 
     protected function makeAdjustments()

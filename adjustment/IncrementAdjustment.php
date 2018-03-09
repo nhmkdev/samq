@@ -29,6 +29,7 @@ include_once dirname(__FILE__).'/Adjustment.php';
 class IncrementAdjustment extends Adjustment
 {
     private $incrementAmount;
+    private $maximum;
 
     function __construct($variable, $incrementAmount) {
         parent::__construct($variable, NULL);
@@ -40,6 +41,13 @@ class IncrementAdjustment extends Adjustment
         return new IncrementAdjustment($variable, $incrementAmount);
     }
 
+    public static function withMax($variable, $incrementAmount, $maximum)
+    {
+        $adjustment = new IncrementAdjustment($variable, $incrementAmount);
+        $adjustment->maximum = $maximum;
+        return $adjustment;
+    }
+
     public function performAdjustment()
     {
         $this->newValue = $this->incrementAmount;
@@ -48,6 +56,9 @@ class IncrementAdjustment extends Adjustment
         if(isset($_SESSION[$this->session_store][$this->variable]))
         {
             $this->newValue = $_SESSION[$this->session_store][$this->variable] + $this->incrementAmount;
+            if(isset($this->maximum) && $this->newValue > $this->maximum){
+                $this->newValue = $this->maximum;
+            }
         }
         parent::performAdjustment();
     }

@@ -32,6 +32,7 @@ include_once dirname(__FILE__) . '/core.php';
 
 include_once dirname(__FILE__) . '/../adjustment/Adjustment.php';
 include_once dirname(__FILE__) . '/../adjustment/ClearAllAdjustment.php';
+include_once dirname(__FILE__) . '/../adjustment/ClearSessionAdjustment.php';
 include_once dirname(__FILE__) . '/../adjustment/IncrementAdjustment.php';
 
 include_once dirname(__FILE__) . '/../condition/EqualityCondition.php';

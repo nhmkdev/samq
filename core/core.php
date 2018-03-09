@@ -192,6 +192,8 @@ class SAMQCore
 
         $this->requestTable = $newTable;
 
+        //echo "Request Table Size: ".sizeof($this->requestTable).'<br>';
+
         // confirm that every requestId is used in a response.
         if($this->debug_validateRequestIds)
         {
@@ -210,7 +212,7 @@ class SAMQCore
             {
                 if(!isset($allRequestsIdsReferencedByResponses[$request->getRequestIdentifier()]))
                 {
-                    echo '<br>Found an unreferenced requestId:['.$request->getRequestIdentifier().']';
+                    echo '<br>Found an unreferenced requestId:['.$request->getRequestIdentifier().']<br>';
                 }
             }
         }
