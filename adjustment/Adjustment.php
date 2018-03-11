@@ -28,7 +28,7 @@ class Adjustment
 {
     protected $variable;
     protected $newValue;
-    protected $session_store = DEFAULT_STORE;
+    protected $session_store = ADJUSTMENT_DEFAULT_STORE;
 
     function __construct($variable, $newValue) {
         $this->variable = $variable;

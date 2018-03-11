@@ -25,44 +25,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 include_once dirname(__FILE__) . '/../core/core.php';
-include_once dirname(__FILE__) . '/../condition/iCondition.php';
+include_once dirname(__FILE__) . '/ConditionalElseText.php';
 
-class ConditionalText
+class ConditionalText extends ConditionalElseText
 {
-    public $text;
-    protected $conditions;
-
     function __construct($text, $conditions) {
-        $this->text = $text;
-        $this->conditions = ConditionalText::getArrayFromArg($conditions, NULL);
+        parent::__construct($text, '', $conditions);
     }
 
     public static function with($text, $conditions)
     {
         return new ConditionalText($text, $conditions);
-    }
-
-    public function getConditionalText(){
-        if(isset($this->conditions)){
-            foreach($this->conditions as $condition){
-                if(!$condition->isMet()){
-                    return '';
-                }
-            }
-        }
-        return $this->text;
-    }
-
-    // TODO: this is duplicated now
-    private static function getArrayFromArg($arg, $default) {
-        if(isset($arg)) {
-            if (is_array($arg)) {
-                return $arg;
-            }
-            else{
-                return array($arg);
-            }
-        }
-        return $default;
     }
 }

@@ -43,7 +43,7 @@ class MoveInputRequest extends InputRequest
         $this->eastResponse = $eastResult instanceof Response ? $eastResult : MoveInputRequest::createMoveResponse('e', $eastResult);
         $this->southResponse = $southResult instanceof Response ? $southResult : MoveInputRequest::createMoveResponse('s', $southResult);
         $this->commandResponse = $commandResponse;
-        $this->additionalResponses = MoveInputRequest::getArrayFromArg($additionalResponses, NULL);
+        $this->additionalResponses = SAMQUtils::getArrayFromArg($additionalResponses, NULL);
 
         //var_dump($this);
 
@@ -90,6 +90,26 @@ class MoveInputRequest extends InputRequest
         $this->responses = $updatedResponses;
     }
 
+    public function getNorthResponse()
+    {
+        return $this->northResponse;
+    }
+
+    public function getWestResponse()
+    {
+        return $this->westResponse;
+    }
+
+    public function getEastResponse()
+    {
+        return $this->eastResponse;
+    }
+
+    public function getSouthResponse()
+    {
+        return $this->northResponse;
+    }
+
     public function setNorthResponse($response)
     {
         $this->northResponse = $response;
@@ -127,7 +147,7 @@ class MoveInputRequest extends InputRequest
 
     public function setAdditionalResponse($responses)
     {
-        $this->additionalResponses = MoveInputRequest::getArrayFromArg($responses, NULL);
+        $this->additionalResponses = SAMQUtils::getArrayFromArg($responses, NULL);
         $this->updateResponses();
         return $this;
     }
@@ -168,38 +188,6 @@ class MoveInputRequest extends InputRequest
                 break;
         }
         return new Response('Move '.$text, $requestId);
-    }
-
-    private static function getArrayFromArg($arg, $default) {
-        if(isset($arg)) {
-            if (is_array($arg)) {
-                return $arg;
-            }
-            else{
-                return array($arg);
-            }
-        }
-        return $default;
-    }
-
-    public function getNorthResponse()
-    {
-        return $this->northResponse;
-    }
-
-    public function getWestResponse()
-    {
-        return $this->westResponse;
-    }
-
-    public function getEastResponse()
-    {
-        return $this->eastResponse;
-    }
-
-    public function getSouthResponse()
-    {
-        return $this->northResponse;
     }
 
     public function render($samqCore)
@@ -255,8 +243,6 @@ class MoveInputRequest extends InputRequest
         }
         echo '<br>'.DBG_EOL;
         echo '</form></p>'.DBG_EOL;
-
-        $this->makePostAdjustments();
     }
 
     public function getChoiceButton($responseObject, $suffix) {

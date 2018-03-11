@@ -38,11 +38,11 @@ class InputRequest
 
     function __construct($text, $responses) {
         $this->text = $text;
-        $this->responses = InputRequest::getArrayFromArg($responses, NULL);
+        $this->responses = SAMQUtils::getArrayFromArg($responses, NULL);
     }
 
-    public static function with($text, $responseSet){
-        return new InputRequest($text, $responseSet);
+    public static function with($text, $responses){
+        return new InputRequest($text, $responses);
     }
 
     public function processId($id, $samqCore)
@@ -67,21 +67,20 @@ class InputRequest
     }
 
     public function setAdjustments($adjustments) {
-        $this->adjustments = InputRequest::getArrayFromArg($adjustments, NULL);
+        $this->adjustments = SAMQUtils::getArrayFromArg($adjustments, NULL);
         return $this;
     }
 
     public function setPostAdjustments($postAdjustments) {
-        $this->postAdjustments = InputRequest::getArrayFromArg($postAdjustments, NULL);
+        $this->postAdjustments = SAMQUtils::getArrayFromArg($postAdjustments, NULL);
         return $this;
     }
 
     public function setConditionalText($conditionalText){
-        $this->conditionalText = InputRequest::getArrayFromArg($conditionalText, NULL);
+        $this->conditionalText = SAMQUtils::getArrayFromArg($conditionalText, NULL);
         return $this;
     }
 
-    // THIS IS OVERRIDEN IN MOVEINPUTREQUEST!! (probably need a wrapper method or something )
     public function render($samqCore)
     {
         echo'<p>'
@@ -98,12 +97,17 @@ class InputRequest
         }
 
         echo '</form></p>'.DBG_EOL;
-
-        $this->makePostAdjustments();
     }
+
+    // NOTE: these are intentionally seperated from render so an adjustment can be used to control other
+    // components of rendering or otherwise in the $_SESSION (preProcess -> render -> postProcess)
 
     public function preProcess(){
         $this->makeAdjustments();
+    }
+
+    public function postProcess(){
+        $this->makePostAdjustments();
     }
 
     protected function makeAdjustments()
@@ -156,20 +160,5 @@ class InputRequest
     public function setRequestIdentifier($requestIdentifier)
     {
         $this->requestIdentifier = $requestIdentifier;
-    }
-
-
-
-    // TODO: this is duplicated now
-    private static function getArrayFromArg($arg, $default) {
-        if(isset($arg)) {
-            if (is_array($arg)) {
-                return $arg;
-            }
-            else{
-                return array($arg);
-            }
-        }
-        return $default;
     }
 }

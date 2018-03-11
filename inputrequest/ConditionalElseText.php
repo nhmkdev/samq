@@ -27,13 +27,16 @@
 include_once dirname(__FILE__) . '/../core/core.php';
 include_once dirname(__FILE__) . '/../condition/iCondition.php';
 
-class ConditionalElseText extends ConditionalText
+class ConditionalElseText
 {
+    private $conditions;
+    private $text;
     private $elseText;
 
     function __construct($text, $elseText, $conditions) {
+        $this->text = $text;
         $this->elseText = $elseText;
-        parent::__construct($text, $conditions);
+        $this->conditions = SAMQUtils::getArrayFromArg($conditions, NULL);
     }
 
     public function getConditionalText(){

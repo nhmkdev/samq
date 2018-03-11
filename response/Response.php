@@ -26,7 +26,7 @@
 
 include_once dirname(__FILE__) . '/../core/core.php';
 include_once dirname(__FILE__) . '/ResponseState.php';
-include_once dirname(__FILE__) . '/../condition/iCondition.php';
+include_once dirname(__FILE__) . '/../condition/Condition.php';
 
 class Response
 {
@@ -34,9 +34,13 @@ class Response
     public $requestId;
 
     private $adjustments;
-    private $disabledConditions;
-    private $enabledConditions;
-    private $hiddenConditions;
+    private $disabledOnAllConditions;
+    private $disabledOnAnyConditions;
+    private $enabledOnAllConditions;
+    private $enabledOnAnyConditions;
+    private $hiddenOnAllConditions;
+    private $hiddenOnAnyConditions;
+    private $defaultState = ResponseState::Enabled;
 
     private $id;
     private $postValue;
@@ -53,35 +57,43 @@ class Response
     }
 
     public function setAdjustments($adjustments) {
-        $this->adjustments = Response::getArrayFromArg($adjustments, NULL);
+        $this->adjustments = SAMQUtils::getArrayFromArg($adjustments, NULL);
         return $this;
     }
 
-    public function setHiddenConditions($conditions){
-        $this->hiddenConditions = Response::getArrayFromArg($conditions, NULL);
+    public function setHiddenOnAllConditions($conditions){
+        $this->hiddenOnAllConditions = SAMQUtils::getArrayFromArg($conditions, NULL);
         return $this;
     }
 
-    public function setDisabledConditions($conditions){
-        $this->disabledConditions = Response::getArrayFromArg($conditions, NULL);
+    public function setHiddenOnAnyConditions($conditions){
+        $this->hiddenOnAnyConditions = SAMQUtils::getArrayFromArg($conditions, NULL);
         return $this;
     }
 
-    public function setEnabledConditions($conditions){
-        $this->enabledConditions = Response::getArrayFromArg($conditions, NULL);
+    public function setDisabledOnAllConditions($conditions){
+        $this->disabledOnAllConditions = SAMQUtils::getArrayFromArg($conditions, NULL);
         return $this;
     }
 
-    private static function getArrayFromArg($arg, $default) {
-        if(isset($arg)) {
-            if (is_array($arg)) {
-                return $arg;
-            }
-            else{
-                return array($arg);
-            }
-        }
-        return $default;
+    public function setDisabledOnAnyConditions($conditions){
+        $this->disabledOnAnyConditions = SAMQUtils::getArrayFromArg($conditions, NULL);
+        return $this;
+    }
+
+    public function setEnabledOnAllConditions($conditions){
+        $this->enabledOnAllConditions = SAMQUtils::getArrayFromArg($conditions, NULL);
+        return $this;
+    }
+
+    public function setEnabledOnAnyConditions($conditions){
+        $this->enabledOnAnyConditions = SAMQUtils::getArrayFromArg($conditions, NULL);
+        return $this;
+    }
+
+    public function setDefaultState($defaultState){
+        $this->defaultState = $defaultState;
+        return $this;
     }
 
     public function render()
@@ -130,29 +142,28 @@ class Response
     }
 
     public function getResponseState() {
-        //echo isset($this->enabledConditions) ? 'set' : 'unset'.'<br>';
-
-        // hidden/disabled are ANY conditions pass
-        if(Response::anyConditionsPass($this->hiddenConditions, false)){
+        if(Response::allConditionsPass($this->hiddenOnAllConditions)){
             return ResponseState::Hidden;
         }
-        elseif(Response::anyConditionsPass($this->disabledConditions, false)){
+        if(Response::anyConditionsPass($this->hiddenOnAnyConditions)){
+            return ResponseState::Hidden;
+        }
+        if(Response::allConditionsPass($this->disabledOnAllConditions)){
             return ResponseState::Disabled;
         }
-        // enabled is ALL conditions must pass
-        elseif(Response::allConditionsPass($this->enabledConditions, true)) {
+        if(Response::anyConditionsPass($this->disabledOnAnyConditions)){
+            return ResponseState::Disabled;
+        }
+        if(Response::allConditionsPass($this->enabledOnAllConditions)){
             return ResponseState::Enabled;
         }
-        // if the above failed and there are conditions disabled is the correct state
-        elseif(isset($this->enabledConditions))
-        {
-            return ResponseState::Disabled;
+        if(Response::anyConditionsPass($this->enabledOnAnyConditions)){
+            return ResponseState::Enabled;
         }
-        // definitely questionable...
-        return ResponseState::Hidden;
+        return $this->defaultState;
     }
 
-    private static function allConditionsPass($conditions, $default){
+    private static function allConditionsPass($conditions){
         if(isset($conditions))
         {
             foreach ($conditions as $condition){
@@ -160,11 +171,12 @@ class Response
                     return false;
                 }
             }
+            return true;
         }
-        return $default;
+        return false;
     }
 
-    private static function anyConditionsPass($conditions, $default){
+    private static function anyConditionsPass($conditions){
         if(isset($conditions))
         {
             foreach ($conditions as $condition){
@@ -173,7 +185,7 @@ class Response
                 }
             }
         }
-        return $default;
+        return false;
     }
 
     public function makeAdjustments()

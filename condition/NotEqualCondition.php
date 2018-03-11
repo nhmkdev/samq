@@ -27,7 +27,7 @@
 include_once dirname(__FILE__) . '/../core/core.php';
 include_once dirname(__FILE__) . '/Condition.php';
 
-class NotEqualityCondition extends Condition
+class NotEqualCondition extends Condition
 {
     private $mustNotEqualValue;
 
@@ -38,7 +38,7 @@ class NotEqualityCondition extends Condition
 
     public static function with($variable, $mustNotEqualValue)
     {
-        return new NotEqualityCondition($variable, $mustNotEqualValue);
+        return new NotEqualCondition($variable, $mustNotEqualValue);
     }
 
     public function isMet()

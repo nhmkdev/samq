@@ -26,17 +26,21 @@
 
 // the kitchen sink of includes
 
-define("DEFAULT_STORE", "default");
+define("ADJUSTMENT_DEFAULT_STORE", "default");
 
 include_once dirname(__FILE__) . '/core.php';
+include_once dirname(__FILE__) . '/DestinationInquiry.php';
+include_once dirname(__FILE__) . '/InvalidRequestCode.php';
+include_once dirname(__FILE__) . '/SAMQCore.php';
+include_once dirname(__FILE__) . '/SAMQUtils.php';
 
 include_once dirname(__FILE__) . '/../adjustment/Adjustment.php';
 include_once dirname(__FILE__) . '/../adjustment/ClearAllAdjustment.php';
 include_once dirname(__FILE__) . '/../adjustment/ClearSessionAdjustment.php';
 include_once dirname(__FILE__) . '/../adjustment/IncrementAdjustment.php';
 
-include_once dirname(__FILE__) . '/../condition/EqualityCondition.php';
-include_once dirname(__FILE__) . '/../condition/NotEqualityCondition.php';
+include_once dirname(__FILE__) . '/../condition/EqualCondition.php';
+include_once dirname(__FILE__) . '/../condition/NotEqualCondition.php';
 include_once dirname(__FILE__) . '/../condition/GreaterOrEqualCondition.php';
 
 include_once dirname(__FILE__) . '/../inputrequest/ConditionalText.php';

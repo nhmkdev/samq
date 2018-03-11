@@ -27,7 +27,7 @@
 abstract class Condition
 {
     protected $variable;
-    protected $session_store = DEFAULT_STORE;
+    protected $session_store = ADJUSTMENT_DEFAULT_STORE;
 
     function __construct($variable) {
         $this->variable = $variable;

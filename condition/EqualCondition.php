@@ -27,7 +27,7 @@
 include_once dirname(__FILE__) . '/../core/core.php';
 include_once dirname(__FILE__) . '/Condition.php';
 
-class EqualityCondition extends Condition
+class EqualCondition extends Condition
 {
     private $requiredValue;
 
@@ -38,7 +38,7 @@ class EqualityCondition extends Condition
 
     public static function with($variable, $requiredValue)
     {
-        return new EqualityCondition($variable, $requiredValue);
+        return new EqualCondition($variable, $requiredValue);
     }
 
     public function isMet()

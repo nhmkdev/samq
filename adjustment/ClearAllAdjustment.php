@@ -33,8 +33,8 @@ class ClearAllAdjustment extends Adjustment
         parent::__construct(NULL, NULL);
     }
 
-    public static function withStore($variable, $newValue, $session_store) {
-        $adjustment = new Adjustment($variable, $newValue);
+    public static function ofStore($session_store) {
+        $adjustment = new ClearAllAdjustment();
         $adjustment->session_store = $session_store;
         return $adjustment;
     }
