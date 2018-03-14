@@ -28,6 +28,7 @@ include_once dirname(__FILE__) . '/adjustment/ClearAllAdjustmentTest.php';
 include_once dirname(__FILE__) . '/adjustment/IncrementAdjustmentTest.php';
 include_once dirname(__FILE__) . '/condition/EqualConditionTest.php';
 include_once dirname(__FILE__) . '/condition/GreaterOrEqualConditionTest.php';
+include_once dirname(__FILE__) . '/condition/LessOrEqualConditionTest.php';
 include_once dirname(__FILE__) . '/condition/NotEqualConditionTest.php';
 include_once dirname(__FILE__) . '/core/CoreTest.php';
 include_once dirname(__FILE__) . '/inputrequest/ConditionalElseTextTest.php';

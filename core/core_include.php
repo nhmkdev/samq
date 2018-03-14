@@ -42,6 +42,7 @@ include_once dirname(__FILE__) . '/../adjustment/IncrementAdjustment.php';
 include_once dirname(__FILE__) . '/../condition/EqualCondition.php';
 include_once dirname(__FILE__) . '/../condition/NotEqualCondition.php';
 include_once dirname(__FILE__) . '/../condition/GreaterOrEqualCondition.php';
+include_once dirname(__FILE__) . '/../condition/LessOrEqualCondition.php';
 
 include_once dirname(__FILE__) . '/../inputrequest/ConditionalText.php';
 include_once dirname(__FILE__) . '/../inputrequest/ConditionalElseText.php';
