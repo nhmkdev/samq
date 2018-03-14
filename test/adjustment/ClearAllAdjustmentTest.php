@@ -9,19 +9,19 @@ new ClearAllAdjustmentTest();
 
 class ClearAllAdjustmentTest extends TestAutoRunner
 {
+    public function setupTest(){
+        session_unset();
+    }
 
-    function testClearAllAdjustment()
-    {
-        $_SESSION[TEST_STORE] = array();
-        $_SESSION[TEST_STORE][TEST_FIELD] = TEST_VALUE;
-        $_SESSION[TEST_STORE_2] = array();
-        $_SESSION[TEST_STORE_2][TEST_FIELD] = TEST_VALUE;
+    function testClearAllAdjustment(){
+        Adjustment::withStore(TEST_FIELD, TEST_VALUE, TEST_STORE)->performAdjustment();
+        Adjustment::withStore(TEST_FIELD, TEST_VALUE, TEST_STORE_2)->performAdjustment();
 
         $adjustment = ClearAllAdjustment::ofStore(TEST_STORE);
         $adjustment->performAdjustment();
 
-        verify(!isset($_SESSION[TEST_STORE]), __FUNCTION__, __FUNCTION__ . " in " . __FILE__ . " at " . __LINE__);
-        verify(isset($_SESSION[TEST_STORE_2][TEST_FIELD]), __FUNCTION__, __FUNCTION__ . " in " . __FILE__ . " at " . __LINE__);
-        verify($_SESSION[TEST_STORE_2][TEST_FIELD] == TEST_VALUE, __FUNCTION__, __FUNCTION__ . " in " . __FILE__ . " at " . __LINE__);
+        verify(!isset($_SESSION[TEST_STORE]), testId(__FILE__, __FUNCTION__), 'Clear all failed to clear.');
+        verify(isset($_SESSION[TEST_STORE_2][TEST_FIELD]), testId(__FILE__, __FUNCTION__), 'Clear all affected the wrong store.');
+        verify($_SESSION[TEST_STORE_2][TEST_FIELD] == TEST_VALUE, testId(__FILE__, __FUNCTION__), 'Clear all affected a value in another store.');
     }
 }

@@ -12,8 +12,5 @@ class InputRequestTest extends TestAutoRunner
 
 }
 
-// test different adjustments
-
-
-
-// test conditional text
+// test different adjustments?
+// test conditional text?

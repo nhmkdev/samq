@@ -25,7 +25,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 include_once dirname(__FILE__) . '/../core/core.php';
-include_once dirname(__FILE__) . '/../condition/iCondition.php';
 
 class ConditionalElseText
 {
@@ -37,6 +36,10 @@ class ConditionalElseText
         $this->text = $text;
         $this->elseText = $elseText;
         $this->conditions = SAMQUtils::getArrayFromArg($conditions, NULL);
+    }
+
+    public static function withElse($text, $elseText, $conditions){
+        return new ConditionalElseText($text, $elseText, $conditions);
     }
 
     public function getConditionalText(){

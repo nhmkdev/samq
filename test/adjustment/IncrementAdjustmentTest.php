@@ -8,7 +8,7 @@
 
 new IncrementAdjustmentTest();
 
-define('INCREMENT_FIELD', 'INCREMENT_FIELD');
+define('ADJUSTMENT_INCREMENT_FIELD', 'ADJUSTMENT_INCREMENT_FIELD');
 
 class IncrementAdjustmentTest extends TestAutoRunner
 {
@@ -18,58 +18,53 @@ class IncrementAdjustmentTest extends TestAutoRunner
     }
 
     function checkValue($adjustment, $expectedValue, $function){
-        $actualValue = $_SESSION[ADJUSTMENT_DEFAULT_STORE][INCREMENT_FIELD];
+        $actualValue = $_SESSION[ADJUSTMENT_DEFAULT_STORE][ADJUSTMENT_INCREMENT_FIELD];
         verify($actualValue == $expectedValue, $function,
-            'Actual value:'.$actualValue.' should be '.$expectedValue.' '.$function);
+            'Actual value:'.$actualValue.' should be '.$expectedValue);
     }
 
-    /**
-     * This method creates and applies a new adjustment
-     * @param $incrementAmount int amount of the adjustment
-     * @return Adjustment|IncrementAdjustment the adjustment
-     */
-    public function createAdjustment($incrementAmount){
-        $adjustment = IncrementAdjustment::with(INCREMENT_FIELD, $incrementAmount);
+    public function createAndPerformAdjustment($incrementAmount){
+        $adjustment = IncrementAdjustment::with(ADJUSTMENT_INCREMENT_FIELD, $incrementAmount);
         $adjustment->performAdjustment();
         return $adjustment;
     }
 
-    public function testUnsetIncremenent(){
+    public function testUnsetIncrement(){
         $this->checkValue(
-            $this->createAdjustment(1),
+            $this->createAndPerformAdjustment(1),
             1,
-            __FUNCTION__);
+            testId(__FILE__, __FUNCTION__));
     }
 
-    public function testSetIncremenentAtZero(){
-        $this->createAdjustment(0);
+    public function testSetIncrementAtZero(){
+        $this->createAndPerformAdjustment(0);
         $this->checkValue(
-            $this->createAdjustment(1),
+            $this->createAndPerformAdjustment(1),
             1,
-            __FUNCTION__);
+            testId(__FILE__, __FUNCTION__));
     }
 
-    public function testSetIncremenentAtOne(){
-        $this->createAdjustment(1);
+    public function testSetIncrementAtOne(){
+        $this->createAndPerformAdjustment(1);
         $this->checkValue(
-            $this->createAdjustment(1),
+            $this->createAndPerformAdjustment(1),
             2,
-            __FUNCTION__);
+            testId(__FILE__, __FUNCTION__));
     }
 
-    public function testUnsetIncremenentTen(){
+    public function testUnsetIncrementTen(){
         $this->checkValue(
-            $this->createAdjustment(10),
+            $this->createAndPerformAdjustment(10),
             10,
-            __FUNCTION__);
+            testId(__FILE__, __FUNCTION__));
     }
 
-    public function testSetIncremenentAtFive(){
-        $this->createAdjustment(5);
+    public function testSetIncrementAtFive(){
+        $this->createAndPerformAdjustment(5);
         $this->checkValue(
-            $this->createAdjustment(10),
+            $this->createAndPerformAdjustment(10),
             15,
-            __FUNCTION__);
+            testId(__FILE__, __FUNCTION__));
     }
 
 }

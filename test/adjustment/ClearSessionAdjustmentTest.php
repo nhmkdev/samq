@@ -4,11 +4,14 @@ new ClearSessionAdjustmentTest();
 
 class ClearSessionAdjustmentTest extends TestAutoRunner
 {
-    function testClearSession()
-    {
+    public function setupTest(){
+        session_unset();
+    }
+
+    function testClearSession(){
         $_SESSION['test'] = 'testValue';
         $adjustment = new ClearSessionAdjustment();
         $adjustment->performAdjustment();
-        verify(!isset($_SESSION['test']), __FUNCTION__, 'Session clear failed.' . __FUNCTION__ . " in " . __FILE__ . " at " . __LINE__);
+        verify(!isset($_SESSION['test']), testId(__FILE__, __FUNCTION__), 'Session clear failed.');
     }
 }

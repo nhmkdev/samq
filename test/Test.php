@@ -6,7 +6,7 @@ function verify($passOnTrue, $function, $message)
         pass($function);
     }
     else{
-        fail($message);
+        fail($function, $message);
     }
 }
 
@@ -17,9 +17,13 @@ function pass($function)
     echo 'PASS: '.$function.'<br>';
 }
 
-function fail($message)
+function fail($function, $message)
 {
     global $failCount;
     $failCount++;
-    echo 'FAIL: '.$message.'<br>';
+    echo 'FAIL: '.$function.' '.$message.'<br>';
+}
+
+function testId($file, $function){
+    return basename($file).':'.$function;
 }

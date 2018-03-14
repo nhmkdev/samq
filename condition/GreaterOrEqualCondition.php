@@ -47,6 +47,6 @@ class GreaterOrEqualCondition extends Condition
         {
             return false;
         }
-        return $_SESSION[$this->session_store][$this->variable] > $this->requiredValue;
+        return $_SESSION[$this->session_store][$this->variable] >= $this->requiredValue;
     }
 }

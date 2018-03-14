@@ -24,7 +24,7 @@ class ResponseTest extends TestAutoRunner
     function checkState($response, $expectedState, $function){
         $responseState = $response->getResponseState();
         verify($responseState == $expectedState, $function,
-            'Response state:'.$responseState.' should be '.$expectedState.' '.$function);
+            'Response state:'.$responseState.' should be '.$expectedState);
     }
 
 ////// Hidden Tests
@@ -32,7 +32,7 @@ class ResponseTest extends TestAutoRunner
     function testResponseStateHidden_Any(){
         $response = $this->getResponse()
             ->setHiddenOnAnyConditions(EqualCondition::with(PASS_CONDITION_ONE, PASS_CONDITION_ONE_VALUE));
-        $this->checkState($response, ResponseState::Hidden, __FUNCTION__);
+        $this->checkState($response, ResponseState::Hidden, testId(__FILE__, __FUNCTION__));
     }
 
     function testResponseStateHidden_Any_Mixed(){
@@ -41,7 +41,7 @@ class ResponseTest extends TestAutoRunner
                 EqualCondition::with(PASS_CONDITION_ONE, PASS_CONDITION_ONE_VALUE),
                 EqualCondition::with(PASS_CONDITION_ONE, FAIL_CONDITION_ONE_VALUE)
             ]);
-        $this->checkState($response, ResponseState::Hidden, __FUNCTION__);
+        $this->checkState($response, ResponseState::Hidden, testId(__FILE__, __FUNCTION__));
     }
 
     function testResponseStateHidden_All(){
@@ -50,7 +50,7 @@ class ResponseTest extends TestAutoRunner
                 EqualCondition::with(PASS_CONDITION_ONE, PASS_CONDITION_ONE_VALUE),
                 EqualCondition::with(PASS_CONDITION_ONE, PASS_CONDITION_ONE_VALUE)
             ]);
-        $this->checkState($response, ResponseState::Hidden, __FUNCTION__);
+        $this->checkState($response, ResponseState::Hidden, testId(__FILE__, __FUNCTION__));
     }
 
     function testResponseStateHidden_All_Mixed(){
@@ -59,7 +59,7 @@ class ResponseTest extends TestAutoRunner
                 EqualCondition::with(PASS_CONDITION_ONE, PASS_CONDITION_ONE_VALUE),
                 EqualCondition::with(PASS_CONDITION_ONE, FAIL_CONDITION_ONE_VALUE)
             ]);
-        $this->checkState($response, ResponseState::Enabled, __FUNCTION__);
+        $this->checkState($response, ResponseState::Enabled, testId(__FILE__, __FUNCTION__));
     }
 
     function testResponseStateDisabled_HiddenAll_Mixed_DefaultStateDisabled(){
@@ -69,7 +69,7 @@ class ResponseTest extends TestAutoRunner
                 EqualCondition::with(PASS_CONDITION_ONE, FAIL_CONDITION_ONE_VALUE)
             ])
             ->setDefaultState(ResponseState::Disabled);
-        $this->checkState($response, ResponseState::Disabled, __FUNCTION__);
+        $this->checkState($response, ResponseState::Disabled, testId(__FILE__, __FUNCTION__));
     }
 
 ////// Enabled Tests
@@ -78,7 +78,7 @@ class ResponseTest extends TestAutoRunner
         $response = $this->getResponse()
             ->setEnabledOnAnyConditions(EqualCondition::with(PASS_CONDITION_ONE, PASS_CONDITION_ONE_VALUE))
             ->setDefaultState(ResponseState::Hidden);
-        $this->checkState($response, ResponseState::Enabled, __FUNCTION__);
+        $this->checkState($response, ResponseState::Enabled, testId(__FILE__, __FUNCTION__));
     }
 
     function testResponseStateEnabled_Any_Mixed(){
@@ -88,7 +88,7 @@ class ResponseTest extends TestAutoRunner
                 EqualCondition::with(PASS_CONDITION_ONE, FAIL_CONDITION_ONE_VALUE)
             ])
             ->setDefaultState(ResponseState::Hidden);
-        $this->checkState($response, ResponseState::Enabled, __FUNCTION__);
+        $this->checkState($response, ResponseState::Enabled, testId(__FILE__, __FUNCTION__));
     }
 
     function testResponseStateEnabled_All(){
@@ -98,7 +98,7 @@ class ResponseTest extends TestAutoRunner
                 EqualCondition::with(PASS_CONDITION_ONE, PASS_CONDITION_ONE_VALUE)
             ])
             ->setDefaultState(ResponseState::Hidden);
-        $this->checkState($response, ResponseState::Enabled, __FUNCTION__);
+        $this->checkState($response, ResponseState::Enabled, testId(__FILE__, __FUNCTION__));
     }
 
     function testResponseStateEnabled_All_Mixed(){
@@ -108,7 +108,7 @@ class ResponseTest extends TestAutoRunner
                 EqualCondition::with(PASS_CONDITION_ONE, FAIL_CONDITION_ONE_VALUE)
             ])
             ->setDefaultState(ResponseState::Hidden);
-        $this->checkState($response, ResponseState::Hidden, __FUNCTION__);
+        $this->checkState($response, ResponseState::Hidden, testId(__FILE__, __FUNCTION__));
     }
 
 ////// Disabled Tests
@@ -117,7 +117,7 @@ class ResponseTest extends TestAutoRunner
         $response = $this->getResponse()
             ->setDisabledOnAnyConditions(EqualCondition::with(PASS_CONDITION_ONE, PASS_CONDITION_ONE_VALUE))
             ->setDefaultState(ResponseState::Hidden);
-        $this->checkState($response, ResponseState::Disabled, __FUNCTION__);
+        $this->checkState($response, ResponseState::Disabled, testId(__FILE__, __FUNCTION__));
     }
 
     function testResponseStateDisabled_Any_Mixed(){
@@ -127,7 +127,7 @@ class ResponseTest extends TestAutoRunner
                 EqualCondition::with(PASS_CONDITION_ONE, FAIL_CONDITION_ONE_VALUE)
             ])
             ->setDefaultState(ResponseState::Hidden);
-        $this->checkState($response, ResponseState::Disabled, __FUNCTION__);
+        $this->checkState($response, ResponseState::Disabled, testId(__FILE__, __FUNCTION__));
     }
 
     function testResponseStateDisabled_All(){
@@ -137,7 +137,7 @@ class ResponseTest extends TestAutoRunner
                 EqualCondition::with(PASS_CONDITION_ONE, PASS_CONDITION_ONE_VALUE)
             ])
             ->setDefaultState(ResponseState::Hidden);
-        $this->checkState($response, ResponseState::Disabled, __FUNCTION__);
+        $this->checkState($response, ResponseState::Disabled, testId(__FILE__, __FUNCTION__));
     }
 
     function testResponseStateDisabled_All_Mixed(){
@@ -147,7 +147,7 @@ class ResponseTest extends TestAutoRunner
                 EqualCondition::with(PASS_CONDITION_ONE, FAIL_CONDITION_ONE_VALUE)
             ])
             ->setDefaultState(ResponseState::Hidden);
-        $this->checkState($response, ResponseState::Hidden, __FUNCTION__);
+        $this->checkState($response, ResponseState::Hidden, testId(__FILE__, __FUNCTION__));
     }
 
 ////// Special tests (complex sequences)
@@ -172,18 +172,18 @@ class ResponseTest extends TestAutoRunner
             );
 
         // confirm lock is disabled, move disabled
-        $this->checkState($lockResponse, ResponseState::Disabled, __FUNCTION__);
-        $this->checkState($moveResponse, ResponseState::Disabled, __FUNCTION__);
+        $this->checkState($lockResponse, ResponseState::Disabled, testId(__FILE__, __FUNCTION__));
+        $this->checkState($moveResponse, ResponseState::Disabled, testId(__FILE__, __FUNCTION__));
 
         // get key, confirm lock is enabled, move disabled
         $this->adjust($key, 1);
-        $this->checkState($lockResponse, ResponseState::Enabled, __FUNCTION__);
-        $this->checkState($moveResponse, ResponseState::Disabled, __FUNCTION__);
+        $this->checkState($lockResponse, ResponseState::Enabled, testId(__FILE__, __FUNCTION__));
+        $this->checkState($moveResponse, ResponseState::Disabled, testId(__FILE__, __FUNCTION__));
 
         // use key, confirm lock is hidden, move enabled
         $this->adjust($key, 0);
         $this->adjust($keyUsed, 1);
-        $this->checkState($lockResponse, ResponseState::Hidden, __FUNCTION__);
-        $this->checkState($moveResponse, ResponseState::Enabled, __FUNCTION__);
+        $this->checkState($lockResponse, ResponseState::Hidden, testId(__FILE__, __FUNCTION__));
+        $this->checkState($moveResponse, ResponseState::Enabled, testId(__FILE__, __FUNCTION__));
     }
 }

@@ -30,8 +30,8 @@ include_once dirname(__FILE__) . '/../condition/Condition.php';
 
 class Response
 {
-    public $text;
-    public $requestId;
+    private $text;
+    private $requestId;
 
     private $adjustments;
     private $disabledOnAllConditions;
@@ -54,6 +54,14 @@ class Response
 
     public static function with($text, $requestId) {
         return new Response($text, $requestId);
+    }
+
+    public function getText(){
+        return $this->text;
+    }
+
+    public function getRequestId(){
+        return $this->requestId;
     }
 
     public function setAdjustments($adjustments) {
