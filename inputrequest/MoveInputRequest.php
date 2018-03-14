@@ -107,7 +107,7 @@ class MoveInputRequest extends InputRequest
 
     public function getSouthResponse()
     {
-        return $this->northResponse;
+        return $this->southResponse;
     }
 
     public function setNorthResponse($response)

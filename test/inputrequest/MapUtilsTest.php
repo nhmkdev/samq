@@ -17,13 +17,39 @@ class MapUtilsTest extends TestAutoRunner
         $idGrid = MapUtils::generateIdMap($mapLayout, 'testMap');
         $requestMap = MapUtils::buildMap($idGrid, $mapLayout);
         $request = MapUtils::getXY($requestMap, 0, 0);
-        verify(isset($request), testId(__FILE__, __FUNCTION__), 'The request on the map is missing.');
-        if(isset($request)) {
-            verify($request->getText() == '0,0', testId(__FILE__, __FUNCTION__), 'The request on the map is missing');
-            verify($request->getNorthResponse()->getRequestId() == null, testId(__FILE__, __FUNCTION__), 'North should not be set');
-            verify($request->getEastResponse()->getRequestId() == null, testId(__FILE__, __FUNCTION__), 'East should not be set');
-            verify($request->getSouthResponse()->getRequestId() == null, testId(__FILE__, __FUNCTION__), 'South should not be set');
-            verify($request->getWestResponse()->getRequestId() == null, testId(__FILE__, __FUNCTION__), 'West should not be set');
+        $this->verifyMoveInputRequest($request, 'testMap_', '0,0', null, null, null, null, testId(__FILE__, __FUNCTION__));
+    }
+
+
+
+    public function testGridOfFour(){
+        $testId = testId(__FILE__, __FUNCTION__);
+        $mapLayout = array(
+            array('nesw', 'nesw'),
+            array('nesw', 'nesw')
+        );
+        $idGrid = MapUtils::generateIdMap($mapLayout, 'testMap_');
+        $requestMap = MapUtils::buildMap($idGrid, $mapLayout);
+        $this->verifyMoveInputRequest(MapUtils::getXY($requestMap, 0, 0), 'testMap_', '0,0', null, '01_00', '00_01', null, $testId);
+        $this->verifyMoveInputRequest(MapUtils::getXY($requestMap, 1, 0), 'testMap_', '1,0', null, null, '01_01', '00_00', $testId);
+        $this->verifyMoveInputRequest(MapUtils::getXY($requestMap, 0, 1), 'testMap_', '0,1', '00_00', '01_01', null, null, $testId);
+        $this->verifyMoveInputRequest(MapUtils::getXY($requestMap, 1, 1), 'testMap_', '1,1', '01_00', null, null, '00_01', $testId);
+    }
+
+    protected function verifyMoveInputRequest($request, $prefix, $expectedText, $expectedNorth, $expectedEast, $expectedSouth, $expectedWest, $testId){
+        //echo $expectedText.'<br>';
+        verify(isset($request), $testId, 'The request on the map is missing '.$expectedText);
+        if(isset($request)){
+            verify($request->getText() == $expectedText, $testId, 'Incorrect text on the map');
+            $this->verifyResponse($request->getNorthResponse(), $prefix, $expectedNorth, 'North', $testId);
+            $this->verifyResponse($request->getEastResponse(), $prefix, $expectedEast, 'East', $testId);
+            $this->verifyResponse($request->getSouthResponse(), $prefix, $expectedSouth, 'South', $testId);
+            $this->verifyResponse($request->getWestResponse(), $prefix, $expectedWest, 'West', $testId);
         }
+    }
+
+    protected function verifyResponse($response, $prefix, $expected, $direction, $testId){
+        $expectedCombined = ($expected == null ? null : $prefix.$expected);
+        verify($response->getRequestId() == $expectedCombined, $testId, $direction.' should be '.$expectedCombined.' actual '.$response->getRequestId());
     }
 }
