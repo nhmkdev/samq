@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // The MIT License (MIT)
 //
-// Copyright (c) 2017 Tim Stair
+// Copyright (c) 2018 Tim Stair
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +24,16 @@
 // SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
 
-
 include_once dirname(__FILE__).'/Adjustment.php';
 
 class ClearAllAdjustment extends Adjustment
 {
     function __construct() {
         parent::__construct(NULL, NULL);
+    }
+
+    public static function create(){
+        return new ClearAllAdjustment();
     }
 
     public static function ofStore($session_store) {

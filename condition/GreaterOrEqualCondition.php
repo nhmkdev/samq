@@ -24,7 +24,6 @@
 // SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
 
-include_once dirname(__FILE__) . '/../core/core.php';
 include_once dirname(__FILE__) . '/Condition.php';
 
 class GreaterOrEqualCondition extends Condition

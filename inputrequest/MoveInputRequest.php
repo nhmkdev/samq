@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // The MIT License (MIT)
 //
-// Copyright (c) 2017 Tim Stair
+// Copyright (c) 2018 Tim Stair
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@
 // SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
 
-include_once dirname(__FILE__).'/../core/core.php';
 include_once dirname(__FILE__).'/InputRequest.php';
 
 class MoveInputRequest extends InputRequest
@@ -256,7 +255,7 @@ class MoveInputRequest extends InputRequest
         /*
         echo '<br>';
         var_dump($responseObject);
-        echo '<br>';
+        echo '<br>'.$state;
         */
 
         $rendered = true;
@@ -268,7 +267,8 @@ class MoveInputRequest extends InputRequest
                 break;
             case ResponseState::Enabled:
                 // movement buttons use special settings to indicate the direction cannot be taken
-                $enabled = isset($responseObject->requestId);
+                $requestId = $responseObject->getRequestId();
+                $enabled = isset($requestId);
                 break;
             case ResponseState::Disabled:
                 $enabled = false;
@@ -283,7 +283,7 @@ class MoveInputRequest extends InputRequest
                 .'"'
                 .($enabled ? '' : ' disabled')
                 .'>'
-                .$responseObject->text
+                .$responseObject->getText()
                 .'</button>'.$suffix.DBG_EOL;
         }
     }

@@ -122,7 +122,6 @@ class MapUtils
                     continue;
                 }
 
-                // TODO: support checking for presence of "nesw" in string to block out some directions (if string is specified at all)
                 $northId = $y == 0 ? NULL : $idGrid[$y-1][$x];
                 $eastId = $x == $width - 1 ? NULL : $idGrid[$y][$x+1];
                 $southId = $y == $height - 1 ? NULL : $idGrid[$y+1][$x];
