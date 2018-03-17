@@ -27,8 +27,13 @@
 // highly questionable on the location of this file
 class InvalidRequestCode
 {
-    public $requestCode;
+    private $requestCode;
+
     function __construct($jumpCode) {
         $this->requestCode = $jumpCode;
+    }
+
+    public function getRequestCode(){
+        return $this->requestCode;
     }
 }

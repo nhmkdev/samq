@@ -56,8 +56,8 @@ class SAMQCore
     }
 
     /**
-     * @param $requestCode The code to jump to the request
-     * @param $requestId The destination request identifier
+     * @param $requestCode string code to jump to the request
+     * @param $requestId string destination request identifier
      */
     public function addRequestCode($requestCode, $requestId)
     {
@@ -70,7 +70,9 @@ class SAMQCore
         $this->responseTable[$id] = $response;
     }
 
+    // TODO: what was this? hahaha
     public function createAlias($id) {
+        /*
         // build a new alias
         $alias = $id.$this->aliasCounter;
 
@@ -80,7 +82,8 @@ class SAMQCore
         // bump up the counter
         $this->aliasCounter++;
 
-        return $alias;
+        return $alias;*/
+        return '';
     }
 
     public function getDestinationInfo() {
@@ -142,7 +145,7 @@ class SAMQCore
         {
 //            updateInquiryBackground($key, $inquiry);
             $newTable[$this->hash($key)] = $request;
-            foreach ($request->responses as $response)
+            foreach ($request->getResponses() as $response)
             {
                 if(isset($response->requestId) &&
                     !isset($this->requestTable[$response->requestId]))
@@ -167,11 +170,12 @@ class SAMQCore
             $allRequestsIdsReferencedByResponses = array();
             foreach($this->requestTable as $key => $request)
             {
-                foreach ($request->responses as $response)
+                foreach ($request->getResponses() as $response)
                 {
-                    if (isset($response->requestId))
+                    $requestId = $response->getRequestId();
+                    if (isset($requestId))
                     {
-                        $allRequestsIdsReferencedByResponses[$response->requestId] = true;
+                        $allRequestsIdsReferencedByResponses[$requestId] = true;
                     }
                 }
             }

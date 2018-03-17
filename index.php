@@ -58,7 +58,7 @@ function render()
 
     if(!($destinationInfo instanceof InvalidRequestCode))
     {
-        $destinationInfo->destinationRequest->preProcess();
+        $destinationInfo->getDestinationRequest()->preProcess();
     }
 
     echo '</head>'.DBG_EOL;
@@ -67,25 +67,27 @@ function render()
 
     if(!($destinationInfo instanceof InvalidRequestCode))
     {
-        $destinationInfo->destinationRequest->render($samqCore);
+        $destinationInfo->getDestinationRequest()->render($samqCore);
         if(VALIDATE_REQUEST_IDS) {
-            echo $destinationInfo->destinationRequest->getRequestIdentifier() . '<br>';
+            echo $destinationInfo->getDestinationRequest()->getRequestIdentifier() . '<br>';
         }
-        $destinationInfo->destinationRequest->postProcess();
+        $destinationInfo->getDestinationRequest()->postProcess();
     }
     else
     {
-        echo 'Invalid request code: '.$destinationInfo->requestCode;
+        echo 'Invalid request code: '.$destinationInfo->getRequestCode();
     }
 
-    echo '<hr><p><form action='.$samqCore->getPostPath().' method="POST">'.DBG_EOL
+    $formPostAction = '<form action="'.$samqCore->getPostPath().'" method="POST">';
+    
+    echo '<hr><p>'.$formPostAction.DBG_EOL
         .'Jump Code: <input type="text" size="20" name="'.SAMQ_REQUESTCODE.'">&nbsp;&nbsp;&nbsp;'.DBG_EOL
         .'<input type="submit" value="Submit"></form></p>'.DBG_EOL;
 
     if(VALIDATE_REQUEST_IDS) {
-        echo '<hr><p><form action="' . $samqCore->getPostPath() . '" method="POST">' . DBG_EOL
-            . 'Request Code: <input type="text" size="20" name="' . SAMQ_REQUESTID . '">&nbsp;&nbsp;&nbsp;' . DBG_EOL
-            . '<input type="submit" value="Submit"></form></p>' . DBG_EOL;
+        echo '<hr><p>'.$formPostAction.DBG_EOL
+            . 'Request Code: <input type="text" size="20" name="'.SAMQ_REQUESTID.'">&nbsp;&nbsp;&nbsp;'.DBG_EOL
+            . '<input type="submit" value="Submit"></form></p>'.DBG_EOL;
     }
 
     echo '<p><span class="standard"><a href='.$samqCore->getPostPath().'>Start Over</a></span></p>'.DBG_EOL;

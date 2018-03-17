@@ -286,5 +286,7 @@ class MoveInputRequest extends InputRequest
                 .$responseObject->getText()
                 .'</button>'.$suffix.DBG_EOL;
         }
+
+        return '';
     }
 }

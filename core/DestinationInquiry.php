@@ -27,11 +27,21 @@
 // highly questionable on the location of this file
 class DestinationInquiry
 {
-    public $destinationId;
-    public $destinationRequest;
+    private $destinationId;
+    private $destinationRequest;
 
     function __construct($destinationId, $destinationRequest) {
         $this->destinationId = $destinationId;
         $this->destinationRequest = $destinationRequest;
     }
+
+    public function getDestinationId() {
+        return $this->destinationId;
+    }
+
+    public function getDestinationRequest() {
+        return $this->destinationRequest;
+    }
+
+
 }

@@ -30,21 +30,25 @@ class MapUtils
     // IdMap (basically null is ignored, everything else has an id generated)
     // build map uses both the layout and id map (layout is used for control)
 
+    // TODO: docs, maybe some function renames
+
     /**
      * @param $requestMap array of arrays representing the map of requests
      * @param $x int x position
      * @param $y int y position
+     * @return InputRequest the request at the location, or null if none exists.
      */
     public static function getXY($requestMap, $x, $y)
     {
         // this is critical because the maps are arrays of arrays with the outer array being y
         //echo 'seeking '.$x.','.$y;
         //var_dump($requestMap);
+        // TODO: some error checking!
         return $requestMap[$y][$x];
     }
 
     /**
-     * @param $layoutGrid array of layout information (array of arrays)
+     * @param $idGrid array of layout information (array of arrays)
      * @param $prefix string prefix to prepend to all ids
      * @return array resulting array with updated ids
      */

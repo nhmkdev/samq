@@ -27,7 +27,7 @@
 class InputRequest
 {
     protected $text;
-    public $responses;
+    protected $responses;
     private $adjustments;
     private $postAdjustments;
     private $conditionalText;
@@ -76,6 +76,10 @@ class InputRequest
     public function setConditionalText($conditionalText){
         $this->conditionalText = SAMQUtils::getArrayFromArg($conditionalText, NULL);
         return $this;
+    }
+
+    public function getResponses(){
+        return $this->responses;
     }
 
     public function render($samqCore)

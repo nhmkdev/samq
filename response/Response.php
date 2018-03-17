@@ -45,11 +45,21 @@ class Response
 
     // todo text based on conditions... (seems like that's just another response...)
 
+    /**
+     * Response constructor.
+     * @param $text string
+     * @param $requestId string
+     */
     function __construct($text, $requestId) {
         $this->text = $text;
         $this->requestId = $requestId;
     }
 
+    /**
+     * @param $text string
+     * @param $requestId string
+     * @return Response
+     */
     public static function with($text, $requestId) {
         return new Response($text, $requestId);
     }
@@ -135,6 +145,11 @@ class Response
         return $this->postValue;
     }
 
+    /**
+     * @param $requestId string
+     * @param $idx int
+     * @param $samqCore SAMQCore
+     */
     public function processId($requestId, $idx, $samqCore)
     {
         $this->id = $requestId.$idx;
@@ -182,6 +197,10 @@ class Response
         return false;
     }
 
+    /**
+     * @param $conditions array (TODO: can you specify the likely type?)
+     * @return bool
+     */
     private static function anyConditionsPass($conditions){
         if(isset($conditions))
         {
