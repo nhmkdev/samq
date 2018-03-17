@@ -71,6 +71,7 @@ function render()
         if(VALIDATE_REQUEST_IDS) {
             echo $destinationInfo->destinationRequest->getRequestIdentifier() . '<br>';
         }
+        $destinationInfo->destinationRequest->postProcess();
     }
     else
     {
