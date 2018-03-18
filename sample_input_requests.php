@@ -71,7 +71,6 @@ MapUtils::getXY($sampleRequestMap, 4, 4)
                 EqualCondition::with(KEY, 1),
                 EqualCondition::with(KEY_USED, 1)
             ])
-            ->setDefaultState(ResponseState::Enabled)
             ->setAdjustments(Adjustment::with(KEY, 1))
     );
 
