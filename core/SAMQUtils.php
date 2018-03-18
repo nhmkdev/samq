@@ -26,6 +26,13 @@
 
 class SAMQUtils {
 
+    /**
+     * Gets an array of arguments based on the input. If the argument is an array return it, otherwise make a new
+     * array with the specified arg.
+     * @param $arg mixed
+     * @param $default mixed
+     * @return array
+     */
     public static function getArrayFromArg($arg, $default) {
         if(isset($arg)) {
             if (is_array($arg)) {
@@ -38,6 +45,12 @@ class SAMQUtils {
         return $default;
     }
 
+    /**
+     * Determines if the string starts with the prefix
+     * @param $source string
+     * @param $prefix string
+     * @return bool
+     */
     public static function str_startswith($source, $prefix)
     {
         return strncmp($source, $prefix, strlen($prefix)) == 0;

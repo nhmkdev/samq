@@ -30,11 +30,22 @@ class EqualCondition extends Condition
 {
     private $requiredValue;
 
-    function __construct($variable, $requiredValue) {
+    /**
+     * EqualCondition constructor.
+     * @param $variable string
+     * @param $minimumValue mixed
+     */
+    function __construct($variable, $minimumValue) {
         parent::__construct($variable);
-        $this->requiredValue = $requiredValue;
+        $this->requiredValue = $minimumValue;
     }
 
+    /**
+     * Convenience method for constructing an EqualCondition
+     * @param $variable string
+     * @param $requiredValue mixed
+     * @return EqualCondition
+     */
     public static function with($variable, $requiredValue)
     {
         return new EqualCondition($variable, $requiredValue);

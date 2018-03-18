@@ -31,16 +31,34 @@ class IncrementAdjustment extends Adjustment
     private $incrementAmount;
     private $maximum;
 
+    /**
+     * IncrementAdjustment constructor.
+     * @param string $variable
+     * @param mixed $incrementAmount
+     */
     function __construct($variable, $incrementAmount) {
         parent::__construct($variable, NULL);
         $this->incrementAmount = $incrementAmount;
     }
 
+    /**
+     * Convenience method for constructing an IncrementAdjustment
+     * @param $variable string
+     * @param $incrementAmount int
+     * @return IncrementAdjustment
+     */
     public static function with($variable, $incrementAmount)
     {
         return new IncrementAdjustment($variable, $incrementAmount);
     }
 
+    /**
+     * Convenience method for constructing an IncrementAdjustment
+     * @param $variable string
+     * @param $incrementAmount int
+     * @param $maximum int
+     * @return IncrementAdjustment
+     */
     public static function withMax($variable, $incrementAmount, $maximum)
     {
         $adjustment = new IncrementAdjustment($variable, $incrementAmount);

@@ -30,16 +30,34 @@ class Adjustment
     protected $newValue;
     protected $session_store = ADJUSTMENT_DEFAULT_STORE;
 
+    /**
+     * Adjustment constructor.
+     * @param $variable string
+     * @param $newValue mixed
+     */
     function __construct($variable, $newValue) {
         $this->variable = $variable;
         $this->newValue = $newValue;
     }
 
+    /**
+     * Convenience method for constructing an Adjustment
+     * @param $variable string
+     * @param $newValue mixed
+     * @return Adjustment
+     */
     public static function with($variable, $newValue)
     {
         return new Adjustment($variable, $newValue);
     }
 
+    /**
+     * Convenience method for constructing an Adjustment
+     * @param $variable string
+     * @param $newValue mixed
+     * @param $session_store string
+     * @return Adjustment
+     */
     public static function withStore($variable, $newValue, $session_store)
     {
         $adjustment = new Adjustment($variable, $newValue);

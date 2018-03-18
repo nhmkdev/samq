@@ -59,7 +59,7 @@ MapUtils::getXY($sampleRequestMap, 2, 2)
             ])
             ->setDefaultState(ResponseState::Disabled)
             ->setAdjustments(Adjustment::with(KEY_USED, 1)))
-    ->setConditionalText(ConditionalElseText::withElse(
+    ->setConditionalText(ConditionalText::withElse(
         '<br>There is a locked gate here. Try to find the key.',
         '<br>The gate is unlocked. The passage north is open.',
         NotEqualCondition::with(KEY_USED, 1)));

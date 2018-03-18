@@ -28,13 +28,41 @@ include_once dirname(__FILE__).'/InputRequest.php';
 
 class MoveInputRequest extends InputRequest
 {
+    /**
+     * @var Response
+     */
     private $northResponse;
+    /**
+     * @var Response
+     */
     private $westResponse;
+    /**
+     * @var Response
+     */
     private $eastResponse;
+    /**
+     * @var Response
+     */
     private $southResponse;
+    /**
+     * @var Response
+     */
     private $commandResponse;
+    /**
+     * @var Response[]
+     */
     private $additionalResponses;
 
+    /**
+     * MoveInputRequest constructor.
+     * @param $text string
+     * @param $northResult Response|string
+     * @param $westResult Response|string
+     * @param $eastResult Response|string
+     * @param $southResult Response|string
+     * @param $commandResponse Response
+     * @param $additionalResponses Response[]|Response
+     */
     function __construct($text, $northResult, $westResult, $eastResult, $southResult, $commandResponse, $additionalResponses) {
 
         $this->northResponse = $northResult instanceof Response ? $northResult : MoveInputRequest::createMoveResponse('n', $northResult);
@@ -63,6 +91,60 @@ class MoveInputRequest extends InputRequest
         parent::__construct($text, $constructorResponses);
     }
 
+    /**
+     * @param $text string
+     * @param $northResult Response|string
+     * @param $westResult Response|string
+     * @param $eastResult Response|string
+     * @param $southResult Response|string
+     * @param $commandResponse Response
+     * @param $additionalResponses Response[]|Response
+     * @return MoveInputRequest
+     */
+    public static function withAll($text, $northResult, $westResult, $eastResult, $southResult, $commandResponse, $additionalResponses){
+        return new MoveInputRequest($text, $northResult, $westResult, $eastResult, $southResult, $commandResponse, $additionalResponses);
+    }
+
+    /**
+     * @param $text string
+     * @param $northResult Response|string
+     * @param $westResult Response|string
+     * @param $eastResult Response|string
+     * @param $southResult Response|string
+     * @param $commandResponse Response
+     * @return MoveInputRequest
+     */
+    public static function withCommand($text, $northResult, $westResult, $eastResult, $southResult, $commandResponse){
+        return new MoveInputRequest($text, $northResult, $westResult, $eastResult, $southResult, $commandResponse, NULL);
+    }
+
+    /**
+     * @param $text string
+     * @param $northResult Response|string
+     * @param $westResult Response|string
+     * @param $eastResult Response|string
+     * @param $southResult Response|string
+     * @param $additionalResponses Response[]|Response
+     * @return MoveInputRequest
+     */
+    public static function withAdditionalResponses($text, $northResult, $westResult, $eastResult, $southResult, $additionalResponses){
+        return new MoveInputRequest($text, $northResult, $westResult, $eastResult, $southResult, NULL, $additionalResponses);
+    }
+
+    /**
+     * MoveOnlyInputRequest constructor.
+     * @param $text string
+     * @param $northResult Response|string
+     * @param $westResult Response|string
+     * @param $eastResult Response|string
+     * @param $southResult Response|string
+     * @return MoveInputRequest
+     */
+    public static function withDirectionsOnly($text, $northResult, $westResult, $eastResult, $southResult) {
+        // the responseSet is not needed for MoveInquiry
+        return new MoveInputRequest($text, $northResult, $westResult, $eastResult, $southResult, NULL, NULL);
+    }
+
     private function updateResponses()
     {
         $updatedResponses = array(
@@ -89,26 +171,42 @@ class MoveInputRequest extends InputRequest
         $this->responses = $updatedResponses;
     }
 
+    /**
+     * @return Response
+     */
     public function getNorthResponse()
     {
         return $this->northResponse;
     }
 
+    /**
+     * @return Response
+     */
     public function getWestResponse()
     {
         return $this->westResponse;
     }
 
+    /**
+     * @return Response
+     */
     public function getEastResponse()
     {
         return $this->eastResponse;
     }
 
+    /**
+     * @return Response
+     */
     public function getSouthResponse()
     {
         return $this->southResponse;
     }
 
+    /**
+     * @param $response Response
+     * @return MoveInputRequest
+     */
     public function setNorthResponse($response)
     {
         $this->northResponse = $response;
@@ -116,6 +214,10 @@ class MoveInputRequest extends InputRequest
         return $this;
     }
 
+    /**
+     * @param $response Response
+     * @return MoveInputRequest
+     */
     public function setWestResponse($response)
     {
         $this->westResponse = $response;
@@ -123,6 +225,10 @@ class MoveInputRequest extends InputRequest
         return $this;
     }
 
+    /**
+     * @param $response Response
+     * @return MoveInputRequest
+     */
     public function setEastResponse($response)
     {
         $this->eastResponse = $response;
@@ -130,6 +236,10 @@ class MoveInputRequest extends InputRequest
         return $this;
     }
 
+    /**
+     * @param $response Response
+     * @return MoveInputRequest
+     */
     public function setSouthResponse($response)
     {
         $this->southResponse = $response;
@@ -137,6 +247,10 @@ class MoveInputRequest extends InputRequest
         return $this;
     }
 
+    /**
+     * @param $response Response
+     * @return MoveInputRequest
+     */
     public function setCommandResponse($response)
     {
         $this->commandResponse = $response;
@@ -144,6 +258,10 @@ class MoveInputRequest extends InputRequest
         return $this;
     }
 
+    /**
+     * @param $response Response[]|Response
+     * @return MoveInputRequest
+     */
     public function setAdditionalResponse($responses)
     {
         $this->additionalResponses = SAMQUtils::getArrayFromArg($responses, NULL);
@@ -151,24 +269,11 @@ class MoveInputRequest extends InputRequest
         return $this;
     }
 
-    private static function confirmResponseType($obj)
-    {
-        if(!$obj instanceof Response)
-        {
-            echo 'why you do this to me!<br>';
-            return null;
-        }
-        return $obj;
-    }
-
-    public static function withCommand($text, $northResult, $westResult, $eastResult, $southResult, $commandResponse){
-        return new MoveInputRequest($text, $northResult, $westResult, $eastResult, $southResult, $commandResponse, NULL);
-    }
-
-    public static function withAdditionalResponses($text, $northResult, $westResult, $eastResult, $southResult, $additionalResponses){
-        return new MoveInputRequest($text, $northResult, $westResult, $eastResult, $southResult, NULL, $additionalResponses);
-    }
-
+    /**
+     * @param $direction string
+     * @param $requestId string
+     * @return Response
+     */
     public static function createMoveResponse($direction, $requestId){
         $text = 'unknown';
         switch($direction)
@@ -189,6 +294,9 @@ class MoveInputRequest extends InputRequest
         return new Response('Move '.$text, $requestId);
     }
 
+    /**
+     * @param $samqCore SAMQCore
+     */
     public function render($samqCore)
     {
         echo '<p><form action="'.$samqCore->getPostPath().'" method="POST">'.DBG_EOL;
@@ -244,6 +352,11 @@ class MoveInputRequest extends InputRequest
         echo '</form></p>'.DBG_EOL;
     }
 
+    /**
+     * @param $responseObject Response
+     * @param $suffix string
+     * @return string
+     */
     public function getChoiceButton($responseObject, $suffix) {
         if(!isset($responseObject))
         {

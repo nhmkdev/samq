@@ -36,6 +36,11 @@ class ClearAllAdjustment extends Adjustment
         return new ClearAllAdjustment();
     }
 
+    /**
+     * Convenience method for constructing an ClearAllAdjustment
+     * @param $session_store string
+     * @return ClearAllAdjustment
+     */
     public static function ofStore($session_store) {
         $adjustment = new ClearAllAdjustment();
         $adjustment->session_store = $session_store;

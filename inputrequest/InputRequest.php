@@ -26,22 +26,56 @@
 
 class InputRequest
 {
+    /**
+     * @var string
+     */
     protected $text;
+    /**
+     * @var array Response[]
+     */
     protected $responses;
+    /**
+     * @var array Adjustment[]
+     */
     private $adjustments;
+    /**
+     * @var array Adjustment[]
+     */
     private $postAdjustments;
+    /**
+     * @var ConditionalText[]
+     */
     private $conditionalText;
+    /**
+     * @var string
+     */
     private $requestIdentifier;
 
+    /**
+     * InputRequest constructor.
+     * @param $text string
+     * @param $responses Response[]|Response
+     */
     function __construct($text, $responses) {
         $this->text = $text;
         $this->responses = SAMQUtils::getArrayFromArg($responses, NULL);
     }
 
+    /**
+     * Convenience method for constructing an InputRequest
+     * @param $text string
+     * @param $responses Response[]|Response
+     * @return InputRequest
+     */
     public static function with($text, $responses){
         return new InputRequest($text, $responses);
     }
 
+    /**
+     * Processes the id value of this InputRequest
+     * @param $id string
+     * @param $samqCore SAMQCore
+     */
     public function processId($id, $samqCore)
     {
         $idx = 0;
@@ -53,35 +87,59 @@ class InputRequest
         }
     }
 
+    /**
+     * @param $newText string
+     */
     public function setText($newText)
     {
         $this->text = $newText;
     }
 
+    /**
+     * @return string
+     */
     public function getText()
     {
         return $this->text;
     }
 
+    /**
+     * @param $adjustments Adjustment[]|Adjustment
+     * @return InputRequest
+     */
     public function setAdjustments($adjustments) {
         $this->adjustments = SAMQUtils::getArrayFromArg($adjustments, NULL);
         return $this;
     }
 
+    /**
+     * @param $adjustments Adjustment[]|Adjustment
+     * @return InputRequest
+     */
     public function setPostAdjustments($postAdjustments) {
         $this->postAdjustments = SAMQUtils::getArrayFromArg($postAdjustments, NULL);
         return $this;
     }
 
+    /**
+     * @param $conditionalText ConditionalText[]|ConditionalText
+     * @return InputRequest
+     */
     public function setConditionalText($conditionalText){
         $this->conditionalText = SAMQUtils::getArrayFromArg($conditionalText, NULL);
         return $this;
     }
 
+    /**
+     * @return array Response[]
+     */
     public function getResponses(){
         return $this->responses;
     }
 
+    /**
+     * @param $samqCore SAMQCore
+     */
     public function render($samqCore)
     {
         echo'<p>'
@@ -137,6 +195,9 @@ class InputRequest
         }
     }
 
+    /**
+     * @return string
+     */
     protected function getConditionalText() {
         $str = '';
         if(isset($this->conditionalText)){
@@ -148,7 +209,7 @@ class InputRequest
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getRequestIdentifier()
     {
@@ -156,7 +217,7 @@ class InputRequest
     }
 
     /**
-     * @param mixed $requestIdentifier
+     * @param $requestIdentifier string
      */
     public function setRequestIdentifier($requestIdentifier)
     {

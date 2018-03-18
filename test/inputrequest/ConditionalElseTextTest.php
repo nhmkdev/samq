@@ -48,7 +48,7 @@ class ConditionalElseTextTest extends TestAutoRunner
     }
 
     function getConditionalText($conditions){
-        return ConditionalElseText::withElse(CONDITIONAL_ELSE_TEXT_TEXT, CONDITIONAL_ELSE_TEXT_ELSE_TEXT, $conditions);
+        return ConditionalText::withElse(CONDITIONAL_ELSE_TEXT_TEXT, CONDITIONAL_ELSE_TEXT_ELSE_TEXT, $conditions);
     }
 
     public function performAdjustment($newValue){

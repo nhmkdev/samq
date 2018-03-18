@@ -24,16 +24,54 @@
 // SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
 
-include_once dirname(__FILE__) . '/ConditionalElseText.php';
-
-class ConditionalText extends ConditionalElseText
+class ConditionalText
 {
-    function __construct($text, $conditions) {
-        parent::__construct($text, '', $conditions);
+    private $conditions;
+    private $text;
+    private $elseText;
+
+    /**
+     * ConditionalElseText constructor.
+     * @param $text string
+     * @param $elseText string
+     * @param $conditions Condition[]|Condition
+     */
+    function __construct($text, $elseText, $conditions) {
+        $this->text = $text;
+        $this->elseText = $elseText;
+        $this->conditions = SAMQUtils::getArrayFromArg($conditions, NULL);
     }
 
-    public static function with($text, $conditions)
-    {
-        return new ConditionalText($text, $conditions);
+    /**
+     * Convenience method for constructing an ConditionalText
+     * @param $text string
+     * @param $elseText string
+     * @param $conditions Condition[]|Condition
+     * @return ConditionalText
+     */
+    public static function with($text, $conditions){
+        return new ConditionalText($text, '', $conditions);
+    }
+
+    /**
+     * Convenience method for constructing an ConditionalText
+     * @param $text string
+     * @param $elseText string
+     * @param $conditions Condition[]|Condition
+     * @return ConditionalText
+     */
+    public static function withElse($text, $elseText, $conditions){
+        return new ConditionalText($text, $elseText, $conditions);
+    }
+
+    public function getConditionalText(){
+        if(isset($this->conditions)){
+            foreach($this->conditions as $condition){
+                if(!$condition->isMet()){
+                    return $this->elseText;
+                }
+            }
+        }
+        return $this->text;
     }
 }

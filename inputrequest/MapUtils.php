@@ -36,7 +36,7 @@ class MapUtils
      * @param $requestMap array of arrays representing the map of requests
      * @param $x int x position
      * @param $y int y position
-     * @return InputRequest the request at the location, or null if none exists.
+     * @return MoveInputRequest the request at the location, or null if none exists.
      */
     public static function getXY($requestMap, $x, $y)
     {
@@ -50,7 +50,7 @@ class MapUtils
     /**
      * @param $idGrid array of layout information (array of arrays)
      * @param $prefix string prefix to prepend to all ids
-     * @return array resulting array with updated ids
+     * @return array string[][] resulting array with updated ids
      */
     public static function generateIdMap($idGrid, $prefix)
     {
@@ -96,7 +96,7 @@ class MapUtils
      * Builds a map of MoveInputRequest objects based on the specified rectangular array map of ids
      * @param $idGrid array of ids (array of arrays)
      * @param $layoutMap array of layout information (array of arrays)
-     * @return array array of arrays containing the MoveInputRequests (text defaulted to 'X x Y' (upper left = 0,0).
+     * @return array InputRequest[][] array of arrays containing the MoveInputRequests (text defaulted to 'X x Y' (upper left = 0,0).
      */
     public static function buildMap($idGrid, $layoutMap)
     {
@@ -150,6 +150,13 @@ class MapUtils
         return $requestMap;
     }
 
+    /**
+     * Checks for a string within a string, returning a default if found, otherwise null
+     * @param $input string
+     * @param $seek string
+     * @param $value mixed
+     * @return string|null
+     */
     private static function nullIfMissing($input, $seek, $value)
     {
         return strpos($input, $seek) === FALSE ? NULL : $value;
@@ -159,7 +166,7 @@ class MapUtils
      * Adds the requests for a map constructed with buildMap
      * @param $samqCore SAMQCore object to add the requests to
      * @param $idMap array of arrays containing the ids to add
-     * @param $requestMap array of arrays containing the InputRequests to add
+     * @param $requestMap InputRequest[][] array of arrays containing the InputRequests to add
      */
     public static function addRequests($samqCore, $idMap, $requestMap)
     {

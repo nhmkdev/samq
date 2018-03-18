@@ -30,11 +30,22 @@ class LessOrEqualCondition extends Condition
 {
     private $maximumValue;
 
+    /**
+     * LessOrEqualCondition constructor.
+     * @param $variable string
+     * @param $maximumValue int
+     */
     function __construct($variable, $maximumValue) {
         parent::__construct($variable);
         $this->maximumValue = $maximumValue;
     }
 
+    /**
+     * GreaterOrEqualCondition
+     * @param $variable string
+     * @param $maximumValue int
+     * @return LessOrEqualCondition
+     */
     public static function with($variable, $maximumValue)
     {
         return new LessOrEqualCondition($variable, $maximumValue);

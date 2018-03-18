@@ -30,11 +30,22 @@ class NotEqualCondition extends Condition
 {
     private $mustNotEqualValue;
 
+    /**
+     * NotEqualCondition constructor.
+     * @param $variable string
+     * @param $mustNotEqualValue mixed
+     */
     function __construct($variable, $mustNotEqualValue) {
         parent::__construct($variable);
         $this->mustNotEqualValue = $mustNotEqualValue;
     }
 
+    /**
+     * GreaterOrEqualCondition
+     * @param $variable string
+     * @param $mustNotEqualValue mixed
+     * @return NotEqualCondition
+     */
     public static function with($variable, $mustNotEqualValue)
     {
         return new NotEqualCondition($variable, $mustNotEqualValue);

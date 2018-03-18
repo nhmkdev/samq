@@ -38,12 +38,23 @@ class SAMQCore
     private $debug_validateRequestIds = false;
     private $debug_logAdjustments = false;
 
+    /**
+     * SAMQCore constructor.
+     * @param $hashSalt string
+     * @param $defaultDestinationId string
+     * @param $postPath string
+     */
     function __construct($hashSalt, $defaultDestinationId, $postPath) {
         $this->hashSalt = $hashSalt;
         $this->defaultDestinationId = $defaultDestinationId;
         $this->postPath = $postPath;
     }
 
+    /**
+     * Adds a request to the engine and processes the id.
+     * @param $id string
+     * @param $request InputRequest
+     */
     public function addRequest($id, $request)
     {
         if(isset($this->requestTable[$id]))
@@ -56,6 +67,7 @@ class SAMQCore
     }
 
     /**
+     * Adds a request code
      * @param $requestCode string code to jump to the request
      * @param $requestId string destination request identifier
      */
@@ -64,6 +76,11 @@ class SAMQCore
         $this->requestCodeTable[$requestCode] = $requestId;
     }
 
+    // TODO: this method is a bit weird, investigate a better way to perform this op
+    /**
+     * @param $id string
+     * @param $response Response
+     */
     public function addResponse($id, $response)
     {
         // track the responses so adjustments can be made
@@ -86,6 +103,10 @@ class SAMQCore
         return '';
     }
 
+    /**
+     * Get information about the destination InputRequest
+     * @return DestinationInquiry|InvalidRequestCode
+     */
     public function getDestinationInfo() {
         $requestId = $_POST[SAMQ_REQUESTID];
         $requestCodeId = $_POST[SAMQ_REQUESTCODE];
@@ -220,7 +241,7 @@ class SAMQCore
     }
 
     /**
-     * @param bool $debug_validateRequestIds
+     * @param $debug_validateRequestIds bool
      */
     public function setDebugValidateRequestIds($debug_validateRequestIds)
     {

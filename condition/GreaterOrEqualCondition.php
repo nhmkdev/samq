@@ -30,14 +30,25 @@ class GreaterOrEqualCondition extends Condition
 {
     private $requiredValue;
 
-    function __construct($variable, $requiredValue) {
+    /**
+     * GreaterOrEqualCondition constructor.
+     * @param $variable string
+     * @param $minimumValue int
+     */
+    function __construct($variable, $minimumValue) {
         parent::__construct($variable);
-        $this->requiredValue = $requiredValue;
+        $this->requiredValue = $minimumValue;
     }
 
-    public static function with($variable, $requiredValue)
+    /**
+     * Convenience method for constructing an GreaterOrEqualCondition
+     * @param $variable string
+     * @param $minimumValue int
+     * @return GreaterOrEqualCondition
+     */
+    public static function with($variable, $minimumValue)
     {
-        return new GreaterOrEqualCondition($variable, $requiredValue);
+        return new GreaterOrEqualCondition($variable, $minimumValue);
     }
 
     public function isMet()

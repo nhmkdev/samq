@@ -28,19 +28,55 @@ include_once dirname(__FILE__) . '/ResponseState.php';
 
 class Response
 {
+    /**
+     * @var string
+     */
     private $text;
+    /**
+     * @var string
+     */
     private $requestId;
-
+    /**
+     * @var Adjustment[]
+     */
     private $adjustments;
+
+    /**
+     * @var Condition[]
+     */
     private $disabledOnAllConditions;
+    /**
+     * @var Condition[]
+     */
     private $disabledOnAnyConditions;
+    /**
+     * @var Condition[]
+     */
     private $enabledOnAllConditions;
+    /**
+     * @var Condition[]
+     */
     private $enabledOnAnyConditions;
+    /**
+     * @var Condition[]
+     */
     private $hiddenOnAllConditions;
+    /**
+     * @var Condition[]
+     */
     private $hiddenOnAnyConditions;
+    /**
+     * @var int
+     */
     private $defaultState = ResponseState::Enabled;
 
+    /**
+     * @var string
+     */
     private $id;
+    /**
+     * @var string
+     */
     private $postValue;
 
     // todo text based on conditions... (seems like that's just another response...)
@@ -64,49 +100,87 @@ class Response
         return new Response($text, $requestId);
     }
 
+    /**
+     * @return string
+     */
     public function getText(){
         return $this->text;
     }
 
+    /**
+     * @return string
+     */
     public function getRequestId(){
         return $this->requestId;
     }
 
+    /**
+     * @param $adjustments Adjustment[]|Adjustment
+     * @return Response
+     */
     public function setAdjustments($adjustments) {
         $this->adjustments = SAMQUtils::getArrayFromArg($adjustments, NULL);
         return $this;
     }
 
+    /**
+     * @param $conditions Condition[]|Condition
+     * @return Response
+     */
     public function setHiddenOnAllConditions($conditions){
         $this->hiddenOnAllConditions = SAMQUtils::getArrayFromArg($conditions, NULL);
         return $this;
     }
 
+    /**
+     * @param $conditions Condition[]|Condition
+     * @return Response
+     */
     public function setHiddenOnAnyConditions($conditions){
         $this->hiddenOnAnyConditions = SAMQUtils::getArrayFromArg($conditions, NULL);
         return $this;
     }
 
+    /**
+     * @param $conditions Condition[]|Condition
+     * @return Response
+     */
     public function setDisabledOnAllConditions($conditions){
         $this->disabledOnAllConditions = SAMQUtils::getArrayFromArg($conditions, NULL);
         return $this;
     }
 
+    /**
+     * @param $conditions Condition[]|Condition
+     * @return Response
+     */
     public function setDisabledOnAnyConditions($conditions){
         $this->disabledOnAnyConditions = SAMQUtils::getArrayFromArg($conditions, NULL);
         return $this;
     }
 
+    /**
+     * @param $conditions Condition[]|Condition
+     * @return Response
+     */
     public function setEnabledOnAllConditions($conditions){
         $this->enabledOnAllConditions = SAMQUtils::getArrayFromArg($conditions, NULL);
         return $this;
     }
 
+    /**
+     * @param $conditions Condition[]|Condition
+     * @return Response
+     */
     public function setEnabledOnAnyConditions($conditions){
         $this->enabledOnAnyConditions = SAMQUtils::getArrayFromArg($conditions, NULL);
         return $this;
     }
 
+    /**
+     * @param $defaultState int
+     * @return Response
+     */
     public function setDefaultState($defaultState){
         $this->defaultState = $defaultState;
         return $this;
@@ -140,6 +214,9 @@ class Response
         }
     }
 
+    /**
+     * @return string
+     */
     public function getPostValue()
     {
         return $this->postValue;
@@ -162,6 +239,9 @@ class Response
         $samqCore->addResponse($this->postValue, $this);
     }
 
+    /**
+     * @return int
+     */
     public function getResponseState() {
         if(Response::allConditionsPass($this->hiddenOnAllConditions)){
             return ResponseState::Hidden;
@@ -184,6 +264,10 @@ class Response
         return $this->defaultState;
     }
 
+    /**
+     * @param $conditions Condition[]
+     * @return bool
+     */
     private static function allConditionsPass($conditions){
         if(isset($conditions))
         {
@@ -198,7 +282,7 @@ class Response
     }
 
     /**
-     * @param $conditions array (TODO: can you specify the likely type?)
+     * @param $conditions Condition[]
      * @return bool
      */
     private static function anyConditionsPass($conditions){
