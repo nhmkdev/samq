@@ -17,14 +17,14 @@ $samqCore->addRequest('sample_01', InputRequest::with(
 );
 
 $samqCore->addRequest('sample_02a', InputRequest::with(
-    'Welcome to the SAMQ (Stop Asking Me Questions) sample.',
+    'After selecting a response the engine transitions to another InputRequest. You chose 1!',
     [
         Response::with('Continue to the map.', 'sample_map_02_04'),
     ])
 );
 
 $samqCore->addRequest('sample_02b', InputRequest::with(
-    'Welcome to the SAMQ (Stop Asking Me Questions) sample.',
+    'After selecting a response the engine transitions to another InputRequest. You chose 2!',
     [
         Response::with('Continue to the map.', 'sample_map_02_04'),
     ])
@@ -45,21 +45,24 @@ $sampleMapLayout = array(
 $sampleMapIds = MapUtils::generateIdMap($sampleMapLayout, 'sample_map_');
 $sampleRequestMap = MapUtils::buildMap($sampleMapIds, $sampleMapLayout);
 
-MapUtils::getXY($sampleRequestMap, 2, 1)
+MapUtils::getXY($sampleRequestMap, 2, 2)
     ->setNorthResponse(
-        MoveInputRequest::createMoveResponse('n', 'sample_map_02_00')
+        MoveInputRequest::createMoveResponse('n', 'sample_map_02_01')
             ->setEnabledOnAnyConditions(EqualCondition::with(KEY_USED, 1))
             ->setDefaultState(ResponseState::Disabled))
     ->setCommandResponse(
-        Response::with('Unlock', 'sample_map_02_01')
+        Response::with('Unlock', 'sample_map_02_02')
             ->setEnabledOnAllConditions(EqualCondition::with(KEY, 1))
             ->setHiddenOnAnyConditions([
                 EqualCondition::with(KEY_USED, 1),
                 NotEqualCondition::with(KEY, 1)
             ])
             ->setDefaultState(ResponseState::Disabled)
-            ->setAdjustments(Adjustment::with(KEY_USED, 1))
-    );
+            ->setAdjustments(Adjustment::with(KEY_USED, 1)))
+    ->setConditionalText(ConditionalElseText::withElse(
+        '<br>There is a locked gate here. Try to find the key.',
+        '<br>The gate is unlocked. The passage north is open.',
+        NotEqualCondition::with(KEY_USED, 1)));
 
 MapUtils::getXY($sampleRequestMap, 4, 4)
     ->setCommandResponse(
