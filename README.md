@@ -2,7 +2,7 @@
 
 [SAMQ Sample](https://samq.nhmk.com)
 
-Stop Asking Me Questions engine in php. A basic input request engine (text adventure engine).
+Stop Asking Me Questions (SAMQ) is an input request engine written in php intended for games/otherwise running in a web browser.
 
 Check out the [wiki](https://github.com/nhmkdev/samq/wiki) for more information.
 
