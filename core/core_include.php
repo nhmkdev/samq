@@ -28,9 +28,11 @@
 
 define("ADJUSTMENT_DEFAULT_STORE", "default");
 
+include_once dirname(__FILE__) . '/Logger.php';
 include_once dirname(__FILE__) . '/core.php';
 include_once dirname(__FILE__) . '/DestinationInquiry.php';
 include_once dirname(__FILE__) . '/InvalidRequestCode.php';
+include_once dirname(__FILE__) . '/SAMQSettings.php';
 include_once dirname(__FILE__) . '/SAMQCore.php';
 include_once dirname(__FILE__) . '/SAMQUtils.php';
 

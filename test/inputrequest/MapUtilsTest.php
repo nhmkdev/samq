@@ -33,7 +33,7 @@ class MapUtilsTest extends TestAutoRunner
         $idGrid = MapUtils::generateIdMap($mapLayout, 'testMap');
         $requestMap = MapUtils::buildMap($idGrid, $mapLayout);
         $request = MapUtils::getXY($requestMap, 0, 0);
-        $this->verifyMoveInputRequest($request, 'testMap_', '0,0', null, null, null, null, testId(__FILE__, __FUNCTION__));
+        $this->verifyMoveInputRequest($request, 'testMap_', '0,0', NULL, NULL, NULL, NULL, testId(__FILE__, __FUNCTION__));
     }
 
 
@@ -46,10 +46,10 @@ class MapUtilsTest extends TestAutoRunner
         );
         $idGrid = MapUtils::generateIdMap($mapLayout, 'testMap_');
         $requestMap = MapUtils::buildMap($idGrid, $mapLayout);
-        $this->verifyMoveInputRequest(MapUtils::getXY($requestMap, 0, 0), 'testMap_', '0,0', null, '01_00', '00_01', null, $testId);
-        $this->verifyMoveInputRequest(MapUtils::getXY($requestMap, 1, 0), 'testMap_', '1,0', null, null, '01_01', '00_00', $testId);
-        $this->verifyMoveInputRequest(MapUtils::getXY($requestMap, 0, 1), 'testMap_', '0,1', '00_00', '01_01', null, null, $testId);
-        $this->verifyMoveInputRequest(MapUtils::getXY($requestMap, 1, 1), 'testMap_', '1,1', '01_00', null, null, '00_01', $testId);
+        $this->verifyMoveInputRequest(MapUtils::getXY($requestMap, 0, 0), 'testMap_', '0,0', NULL, '01_00', '00_01', NULL, $testId);
+        $this->verifyMoveInputRequest(MapUtils::getXY($requestMap, 1, 0), 'testMap_', '1,0', NULL, NULL, '01_01', '00_00', $testId);
+        $this->verifyMoveInputRequest(MapUtils::getXY($requestMap, 0, 1), 'testMap_', '0,1', '00_00', '01_01', NULL, NULL, $testId);
+        $this->verifyMoveInputRequest(MapUtils::getXY($requestMap, 1, 1), 'testMap_', '1,1', '01_00', NULL, NULL, '00_01', $testId);
     }
 
     protected function verifyMoveInputRequest($request, $prefix, $expectedText, $expectedNorth, $expectedEast, $expectedSouth, $expectedWest, $testId){
@@ -65,7 +65,7 @@ class MapUtilsTest extends TestAutoRunner
     }
 
     protected function verifyResponse($response, $prefix, $expected, $direction, $testId){
-        $expectedCombined = ($expected == null ? null : $prefix.$expected);
+        $expectedCombined = ($expected == NULL ? NULL : $prefix.$expected);
         verify($response->getRequestId() == $expectedCombined, $testId, $direction.' should be '.$expectedCombined.' actual '.$response->getRequestId());
     }
 }

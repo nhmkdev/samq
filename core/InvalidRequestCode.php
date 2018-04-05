@@ -29,8 +29,8 @@ class InvalidRequestCode
 {
     private $requestCode;
 
-    function __construct($jumpCode) {
-        $this->requestCode = $jumpCode;
+    function __construct($requestCode) {
+        $this->requestCode = $requestCode;
     }
 
     public function getRequestCode(){

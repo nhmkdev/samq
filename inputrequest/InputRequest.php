@@ -58,7 +58,7 @@ class InputRequest
      */
     function __construct($text, $responses) {
         $this->text = $text;
-        $this->responses = SAMQUtils::getArrayFromArg($responses, NULL);
+        $this->responses = SAMQUtils::getArrayFromArgVerify($responses, NULL, Response::class);
     }
 
     /**
@@ -108,7 +108,7 @@ class InputRequest
      * @return InputRequest
      */
     public function setAdjustments($adjustments) {
-        $this->adjustments = SAMQUtils::getArrayFromArg($adjustments, NULL);
+        $this->adjustments = SAMQUtils::getArrayFromArgVerify($adjustments, NULL, Adjustment::class);
         return $this;
     }
 
@@ -117,7 +117,7 @@ class InputRequest
      * @return InputRequest
      */
     public function setPostAdjustments($postAdjustments) {
-        $this->postAdjustments = SAMQUtils::getArrayFromArg($postAdjustments, NULL);
+        $this->postAdjustments = SAMQUtils::getArrayFromArgVerify($postAdjustments, NULL, Adjustment::class);
         return $this;
     }
 
@@ -126,7 +126,7 @@ class InputRequest
      * @return InputRequest
      */
     public function setConditionalText($conditionalText){
-        $this->conditionalText = SAMQUtils::getArrayFromArg($conditionalText, NULL);
+        $this->conditionalText = SAMQUtils::getArrayFromArgVerify($conditionalText, NULL, ConditionalText::class);
         return $this;
     }
 

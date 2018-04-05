@@ -52,6 +52,7 @@ include_once dirname(__FILE__) . '/condition/GreaterOrEqualConditionTest.php';
 include_once dirname(__FILE__) . '/condition/LessOrEqualConditionTest.php';
 include_once dirname(__FILE__) . '/condition/NotEqualConditionTest.php';
 include_once dirname(__FILE__) . '/core/CoreTest.php';
+include_once dirname(__FILE__) . '/core/SAMQUtilsTest.php';
 include_once dirname(__FILE__) . '/inputrequest/ConditionalElseTextTest.php';
 include_once dirname(__FILE__) . '/inputrequest/ConditionalTextTest.php';
 include_once dirname(__FILE__) . '/inputrequest/InputRequestTest.php';

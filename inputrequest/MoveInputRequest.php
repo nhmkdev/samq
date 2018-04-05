@@ -70,9 +70,7 @@ class MoveInputRequest extends InputRequest
         $this->eastResponse = $eastResult instanceof Response ? $eastResult : MoveInputRequest::createMoveResponse('e', $eastResult);
         $this->southResponse = $southResult instanceof Response ? $southResult : MoveInputRequest::createMoveResponse('s', $southResult);
         $this->commandResponse = $commandResponse;
-        $this->additionalResponses = SAMQUtils::getArrayFromArg($additionalResponses, NULL);
-
-        //var_dump($this);
+        $this->additionalResponses = SAMQUtils::getArrayFromArgVerify($additionalResponses, NULL, Response::class);
 
         $constructorResponses = array(
             $this->northResponse,
@@ -86,7 +84,6 @@ class MoveInputRequest extends InputRequest
         if(isset($this->additionalResponses)) {
             $constructorResponses = array_merge($constructorResponses, $this->additionalResponses);
         }
-        //var_dump($this->additionalResponses);
 
         parent::__construct($text, $constructorResponses);
     }
@@ -141,7 +138,6 @@ class MoveInputRequest extends InputRequest
      * @return MoveInputRequest
      */
     public static function withDirectionsOnly($text, $northResult, $westResult, $eastResult, $southResult) {
-        // the responseSet is not needed for MoveInquiry
         return new MoveInputRequest($text, $northResult, $westResult, $eastResult, $southResult, NULL, NULL);
     }
 
@@ -159,14 +155,6 @@ class MoveInputRequest extends InputRequest
         if(isset($this->additionalResponses)) {
             $updatedResponses = array_merge($updatedResponses, $this->additionalResponses);
         }
-        // TODO: decide where to do validation like this... convenient here
-        /*
-        foreach ($updatedResponses as $response) {
-            if(!$response instanceof Response){
-                echo 'The response is not the expected type';
-                debug_print_backtrace();
-            }
-        }*/
 
         $this->responses = $updatedResponses;
     }
@@ -264,7 +252,7 @@ class MoveInputRequest extends InputRequest
      */
     public function setAdditionalResponse($responses)
     {
-        $this->additionalResponses = SAMQUtils::getArrayFromArg($responses, NULL);
+        $this->additionalResponses = SAMQUtils::getArrayFromArgVerify($responses, NULL, Response::class);
         $this->updateResponses();
         return $this;
     }
@@ -329,15 +317,6 @@ class MoveInputRequest extends InputRequest
         echo '<td></td>'.DBG_EOL;
         echo '</tr>'.DBG_EOL;
 
-        // originally the conditional text went into the table... messes up the buttons badly
-        /*
-        echo '<tr>'.DBG_EOL;
-        echo '<td colspan="4">'
-            .$this->text
-            .$this->getConditionalText()
-            .'</td>'.DBG_EOL;
-        echo '</tr>'.DBG_EOL;
-*/
         echo '</table>'.DBG_EOL;
         echo $this->text
         .$this->getConditionalText();
@@ -365,12 +344,6 @@ class MoveInputRequest extends InputRequest
 
         $state = $responseObject->getResponseState();
 
-        /*
-        echo '<br>';
-        var_dump($responseObject);
-        echo '<br>'.$state;
-        */
-
         $rendered = true;
         $enabled = true;
 
@@ -387,8 +360,6 @@ class MoveInputRequest extends InputRequest
                 $enabled = false;
                 break;
         }
-
-        //echo $responseObject->text.'::'.$responseObject->requestId.'::'.$state.'<br>';
 
         if($rendered) {
            return '<button type="submit" width="60" name="' . SAMQ_DESTINATION . '" value="'

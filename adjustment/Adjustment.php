@@ -75,7 +75,7 @@ class Adjustment
     protected function logAdjusment()
     {
         global $samqCore;
-        if($samqCore->isDebugLogAdjustments())
+        if(SAMQSettings::isLogAdjustments())
         {
             echo 'Setting ['.$this->session_store.'] '.$this->variable.' to '.$this->newValue.'<br>';
         }

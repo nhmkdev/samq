@@ -1,7 +1,7 @@
 <?php
 
 define("REGION", "");
-define("______", null);
+define("______", NULL);
 define("KEY_USED", "KEY_USED");
 define("KEY", "KEY");
 

@@ -39,7 +39,7 @@ class ConditionalText
     function __construct($text, $elseText, $conditions) {
         $this->text = $text;
         $this->elseText = $elseText;
-        $this->conditions = SAMQUtils::getArrayFromArg($conditions, NULL);
+        $this->conditions = SAMQUtils::getArrayFromArgVerify($conditions, NULL, Condition::class);
     }
 
     /**

@@ -34,15 +34,36 @@ class SAMQUtils {
      * @return array
      */
     public static function getArrayFromArg($arg, $default) {
+        return SAMQUtils::getArrayFromArgVerify($arg, $default, null);
+    }
+
+    /**
+     * Gets an array of arguments based on the input. If the argument is an array return it, otherwise make a new
+     * array with the specified arg. Also checks that the objects in the array are of the specified class type
+     * @param $arg mixed
+     * @param $default mixed
+     * @param $clazz mixed (optional)
+     * @return array or null if the types are not the specified type
+     */
+    public static function getArrayFromArgVerify($arg, $default, $clazz) {
+        $result = $default;
         if(isset($arg)) {
             if (is_array($arg)) {
-                return $arg;
+                $result = $arg;
             }
             else{
-                return array($arg);
+                $result = array($arg);
             }
         }
-        return $default;
+        if(isset($clazz) && isset($result) && is_array($result)){
+            foreach($result as $entry){
+                if(!($entry instanceof $clazz)){
+                    Logger::error("Found ".get_class($entry).' expected '.$clazz);
+                    return null;
+                }
+            }
+        }
+        return $result;
     }
 
     /**

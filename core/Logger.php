@@ -24,30 +24,13 @@
 // SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
 
-include_once dirname(__FILE__).'/Adjustment.php';
-
-class ClearSessionAdjustment extends Adjustment
+class Logger
 {
-    function __construct() {
-        parent::__construct(NULL, NULL);
+    public static function error($msg){
+        echo 'ERROR '.$msg.'<br>';
     }
 
-    public static function create(){
-        return new ClearSessionAdjustment();
-    }
-
-    public function performAdjustment()
-    {
-        $this->logAdjusment();
-        session_unset();
-    }
-
-    protected function logAdjusment()
-    {
-        global $samqCore;
-        if(SAMQSettings::isLogAdjustments())
-        {
-            echo 'Clearing Entire Session!<br>';
-        }
+    public static function info($msg){
+        echo 'INFO '.$msg.'<br>';
     }
 }

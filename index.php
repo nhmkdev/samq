@@ -27,10 +27,13 @@
 // Start the session (if needed)
 session_start();
 
-define("SAMQ_POST_PATH", "/");
+define("SAMQ_POST_PATH", "/samq/");
 define("VALIDATE_REQUEST_IDS", false);
 
 include_once dirname(__FILE__) . '/core/core_include.php';
+
+SAMQSettings::setEnableObfuscationHash(false);
+SAMQSettings::enableFullDebug();
 
 $samqCore = new SAMQCore('salty!', 'sample_01', SAMQ_POST_PATH);
 
@@ -99,8 +102,6 @@ function render()
     echo '</body>'.DBG_EOL;
 }
 
-$samqCore->setDebugValidateRequestIds(VALIDATE_REQUEST_IDS);
-$samqCore->setDebugLogAdjustments(VALIDATE_REQUEST_IDS);
 $samqCore->initializeSequenceTable();
 
 render();

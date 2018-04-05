@@ -56,7 +56,7 @@ class ClearAllAdjustment extends Adjustment
     protected function logAdjusment()
     {
         global $samqCore;
-        if($samqCore->isDebugLogAdjustments())
+        if(SAMQSettings::isLogAdjustments())
         {
             echo 'Clearing ['.$this->session_store.']';
         }

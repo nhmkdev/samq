@@ -26,24 +26,19 @@
 
 class MapUtils
 {
-    // layout map (null, '', or 'nesw')
-    // IdMap (basically null is ignored, everything else has an id generated)
-    // build map uses both the layout and id map (layout is used for control)
-
-    // TODO: docs, maybe some function renames
-
     /**
      * @param $requestMap array of arrays representing the map of requests
      * @param $x int x position
      * @param $y int y position
-     * @return MoveInputRequest the request at the location, or null if none exists.
+     * @return MoveInputRequest the request at the location, or NULL if none exists.
      */
     public static function getXY($requestMap, $x, $y)
     {
         // this is critical because the maps are arrays of arrays with the outer array being y
-        //echo 'seeking '.$x.','.$y;
-        //var_dump($requestMap);
-        // TODO: some error checking!
+        if(!isset($requestMap[$y][$x])){
+            Logger::error(__FUNCTION__.": Attempted to access invalid map coordinate ".$x.','.$y);
+            return NULL;
+        }
         return $requestMap[$y][$x];
     }
 
@@ -61,13 +56,10 @@ class MapUtils
         // first confirm all arrays are equal in length
         for ($y = 1; $y < $height; $y++) {
             if(count($idGrid[$y]) != $width) {
-                // this is useless (appears elsewhere
-                error_log("All rows must be the same length. ".$y." row was not ".$width);
+                Logger::error(__FUNCTION__.": All rows must be the same length. ".$y." row was not ".$width);
+                return NULL;
             }
         }
-
-        //var_dump($idGrid);
-        //echo '<br><br>';
 
         for ($y = 0; $y < $height; $y++) {
             $rowArray = array();
@@ -84,11 +76,9 @@ class MapUtils
                     array_push($rowArray, $newName);
                 }
             }
-            // EW this has to be done after items are added to the $rowArray (guess it's not a reference???)
+            // this has to be done after items are added to the $rowArray
             array_push($prefixMap, $rowArray);
         }
-        //var_dump($prefixMap);
-        //echo '<br><br>';
         return $prefixMap;
     }
 
@@ -100,8 +90,7 @@ class MapUtils
      */
     public static function buildMap($idGrid, $layoutMap)
     {
-        // build all the requests from the XxY map (not adding them so they can be adjusted
-        //)
+        // build all the requests from the XxY map (not adding them so they can be adjusted)
         $height = count($idGrid);
         $width = count($idGrid[0]);
         $requestMap = array();
@@ -109,11 +98,11 @@ class MapUtils
         // first confirm all arrays are equal in length
         for ($y = 1; $y < $height; $y++) {
             if(count($idGrid[$y]) != $width) {
-                // TODO: useless logging
-                error_log("All rows must be the same length. ".$y." row was not ".$width);
+                Logger::error(__FUNCTION__.": All rows must be the same length. ".$y." row was not ".$width);
+                return NULL;
             }
         }
-        //echo 'wtf:'.$width.','.$height.'<br>';
+        //echo $width.','.$height.'<br>';
 
         // now actually process the rows
         for ($y = 0; $y < $height; $y++) {
@@ -139,39 +128,26 @@ class MapUtils
                     $southId = MapUtils::nullIfMissing($layoutItem, 's', $southId);
                     $westId = MapUtils::nullIfMissing($layoutItem, 'w', $westId);
                 }
-
-                //echo $x.",".$y.":".$northId.'::'.$eastId.'::'.$southId.'::'.$westId.'<br>';
                 array_push($rowArray, new MoveInputRequest($x.",".$y, $northId, $westId, $eastId, $southId, NULL, NULL));
             }
-            //var_dump($rowArray);
-            // EW this has to be done after items are added to the $rowArray (guess it's not a reference???)
+            // this has to be done after items are added to the $rowArray
             array_push($requestMap, $rowArray);
         }
         return $requestMap;
     }
 
     /**
-     * Checks for a string within a string, returning a default if found, otherwise null
-     * @param $input string
-     * @param $seek string
-     * @param $value mixed
-     * @return string|null
-     */
-    private static function nullIfMissing($input, $seek, $value)
-    {
-        return strpos($input, $seek) === FALSE ? NULL : $value;
-    }
-
-    /**
      * Adds the requests for a map constructed with buildMap
      * @param $samqCore SAMQCore object to add the requests to
-     * @param $idMap array of arrays containing the ids to add
+     * @param $idMap string[][] array of arrays containing the ids to add
      * @param $requestMap InputRequest[][] array of arrays containing the InputRequests to add
      */
     public static function addRequests($samqCore, $idMap, $requestMap)
     {
         $height = count($idMap);
         $width = count($idMap[0]);
+
+        // TODO: array size checks?
 
         for ($y = 0; $y < $height; $y++) {
             for ($x = 0; $x < $width; $x++) {
@@ -180,5 +156,17 @@ class MapUtils
                 $samqCore->addRequest($id, $requestMap[$y][$x]);
             }
         }
+    }
+
+    /**
+     * Checks for a string within a string, returning a default if found, otherwise NULL
+     * @param $input string
+     * @param $seek string
+     * @param $value mixed
+     * @return string|NULL
+     */
+    private static function nullIfMissing($input, $seek, $value)
+    {
+        return strpos($input, $seek) === FALSE ? NULL : $value;
     }
 }

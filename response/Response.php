@@ -119,7 +119,7 @@ class Response
      * @return Response
      */
     public function setAdjustments($adjustments) {
-        $this->adjustments = SAMQUtils::getArrayFromArg($adjustments, NULL);
+        $this->adjustments = SAMQUtils::getArrayFromArgVerify($adjustments, NULL, Adjustment::class);
         return $this;
     }
 
@@ -128,7 +128,7 @@ class Response
      * @return Response
      */
     public function setHiddenOnAllConditions($conditions){
-        $this->hiddenOnAllConditions = SAMQUtils::getArrayFromArg($conditions, NULL);
+        $this->hiddenOnAllConditions = SAMQUtils::getArrayFromArgVerify($conditions, NULL, Condition::class);
         return $this;
     }
 
@@ -137,7 +137,7 @@ class Response
      * @return Response
      */
     public function setHiddenOnAnyConditions($conditions){
-        $this->hiddenOnAnyConditions = SAMQUtils::getArrayFromArg($conditions, NULL);
+        $this->hiddenOnAnyConditions = SAMQUtils::getArrayFromArgVerify($conditions, NULL, Condition::class);
         return $this;
     }
 
@@ -146,7 +146,7 @@ class Response
      * @return Response
      */
     public function setDisabledOnAllConditions($conditions){
-        $this->disabledOnAllConditions = SAMQUtils::getArrayFromArg($conditions, NULL);
+        $this->disabledOnAllConditions = SAMQUtils::getArrayFromArgVerify($conditions, NULL, Condition::class);
         return $this;
     }
 
@@ -155,7 +155,7 @@ class Response
      * @return Response
      */
     public function setDisabledOnAnyConditions($conditions){
-        $this->disabledOnAnyConditions = SAMQUtils::getArrayFromArg($conditions, NULL);
+        $this->disabledOnAnyConditions = SAMQUtils::getArrayFromArgVerify($conditions, NULL, Condition::class);
         return $this;
     }
 
@@ -164,7 +164,7 @@ class Response
      * @return Response
      */
     public function setEnabledOnAllConditions($conditions){
-        $this->enabledOnAllConditions = SAMQUtils::getArrayFromArg($conditions, NULL);
+        $this->enabledOnAllConditions = SAMQUtils::getArrayFromArgVerify($conditions, NULL, Condition::class);
         return $this;
     }
 
@@ -173,7 +173,7 @@ class Response
      * @return Response
      */
     public function setEnabledOnAnyConditions($conditions){
-        $this->enabledOnAnyConditions = SAMQUtils::getArrayFromArg($conditions, NULL);
+        $this->enabledOnAnyConditions = SAMQUtils::getArrayFromArgVerify($conditions, NULL, Condition::class);
         return $this;
     }
 

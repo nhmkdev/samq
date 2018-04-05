@@ -26,17 +26,30 @@
 
 class SAMQCore
 {
-    private $requestAliases = array(); // request alias (generally a hash) -> request id (NOT yet used)
+    /**
+     * @var array InputRequest[]
+     */
     private $requestTable = array(); // request id -> request
+    /**
+     * @var array string[]
+     */
     private $requestCodeTable = array(); // request code -> request id
+    /**
+     * @var array Response[]
+     */
     private $responseTable = array(); // response id R + hash(requestId + index) -> response
+    /**
+     * @var string
+     */
     private $hashSalt;
+    /**
+     * @var string
+     */
     private $defaultDestinationId;
+    /**
+     * @var string
+     */
     private $postPath;
-
-    // debug/dev functionality
-    private $debug_validateRequestIds = false;
-    private $debug_logAdjustments = false;
 
     /**
      * SAMQCore constructor.
@@ -57,8 +70,8 @@ class SAMQCore
      */
     public function addRequest($id, $request)
     {
-        if(isset($this->requestTable[$id]))
-        {
+        if(SAMQSettings::isLogDuplicateRequests() &&
+            isset($this->requestTable[$id])) {
             echo '<br>Duplicate request being added: '.$id;
         }
         $this->requestTable[$id] = $request;
@@ -71,8 +84,7 @@ class SAMQCore
      * @param $requestCode string code to jump to the request
      * @param $requestId string destination request identifier
      */
-    public function addRequestCode($requestCode, $requestId)
-    {
+    public function addRequestCode($requestCode, $requestId) {
         $this->requestCodeTable[$requestCode] = $requestId;
     }
 
@@ -81,26 +93,9 @@ class SAMQCore
      * @param $id string
      * @param $response Response
      */
-    public function addResponse($id, $response)
-    {
+    public function addResponse($id, $response) {
         // track the responses so adjustments can be made
         $this->responseTable[$id] = $response;
-    }
-
-    // TODO: what was this? hahaha
-    public function createAlias($id) {
-        /*
-        // build a new alias
-        $alias = $id.$this->aliasCounter;
-
-        // assign the alias to the actual id
-        $this->requestAliases[$alias] = $id;
-
-        // bump up the counter
-        $this->aliasCounter++;
-
-        return $alias;*/
-        return '';
     }
 
     /**
@@ -111,11 +106,17 @@ class SAMQCore
         $requestId = $_POST[SAMQ_REQUESTID];
         $requestCodeId = $_POST[SAMQ_REQUESTCODE];
 
+        $this->logRequestEval('POST '
+            .SAMQ_REQUESTID.':['.$requestId.'] '
+            .SAMQ_REQUESTCODE.':['.$requestCodeId.'] '
+            .SAMQ_DESTINATION.':['.$_POST[SAMQ_DESTINATION].']');
+
         // direct request identifier
         if(isset($requestId))
         {
             $destinationId = $this->hash($requestId);
         }
+
         // check for a request code
         else if(isset($requestCodeId)) {
             $requestCode = $this->getRequestId($requestCodeId);
@@ -134,12 +135,18 @@ class SAMQCore
             $destinationId =  $_POST[SAMQ_DESTINATION];
 
             // eval if this is a response
-            // note: this is a hacky approach due to the R prefix
+            // todo/note: this is a hacky approach due to the R prefix
             if(SAMQUtils::str_startswith($destinationId, "R"))
             {
-                $response = $this->responseTable[$destinationId];
-                $response->makeAdjustments();
-                $destinationId = $this->hash($response->getRequestId());
+                if(isset($this->responseTable[$destinationId])){
+                    $response = $this->responseTable[$destinationId];
+                    $response->makeAdjustments();
+                    $destinationId = $this->hash($response->getRequestId());
+                }
+                else{
+                    // always log this
+                    Logger::error('Failed to find response: '.$destinationId);
+                }
             }
         }
 
@@ -151,28 +158,23 @@ class SAMQCore
         return new DestinationInquiry($destinationId, $this->requestTable[$destinationId]);
     }
 
-    public function initializeSequenceTable() {
+    private function hashRequestTable(){
+        if(!SAMQSettings::isEnableObfuscationHash()) return;
 
-        //$sequenceAliases[$id.$suffix] = $id;
-        foreach($this->requestAliases as $alias => $sequence) {
-            $sequenceTable[$alias] = $this->requestTable[$sequence];
-        }
+        $hashedRequestTable = array();
 
-        $newTable = array();
-
-        // validate and mutate the keys into hashes so the post data cannot be guessed
+        // validate and mutate the keys into hashes so the post data cannot be (easily) guessed
         $validData = true;
         foreach($this->requestTable as $key => $request)
         {
-//            updateInquiryBackground($key, $inquiry);
-            $newTable[$this->hash($key)] = $request;
-            foreach ($request->getResponses() as $response)
-            {
-                if(isset($response->requestId) &&
-                    !isset($this->requestTable[$response->requestId]))
-                {
-                    echo '<br>Found a missing requestId:'.$response->requestId.' on Request: '.$request->getRequestIdentifier();
-                    $validData = false;
+            $hashedRequestTable[$this->hash($key)] = $request;
+            if(SAMQSettings::isLogMissingRequestIds()) {
+                foreach ($request->getResponses() as $response) {
+                    if (isset($response->requestId) &&
+                        !isset($this->requestTable[$response->requestId])) {
+                        echo '<br>Found a missing requestId:' . $response->requestId . ' on Request: ' . $request->getRequestIdentifier();
+                        $validData = false;
+                    }
                 }
             }
         }
@@ -181,86 +183,66 @@ class SAMQCore
             echo '<br>Validation Errors!';
         }
 
-        $this->requestTable = $newTable;
+        $this->requestTable = $hashedRequestTable;
+    }
 
-        //echo "Request Table Size: ".sizeof($this->requestTable).'<br>';
+    private function checkForUnreferencedRequestIds(){
+        if(!SAMQSettings::isLogUnreferencedRequestIds()) return;
 
         // confirm that every requestId is used in a response.
-        if($this->debug_validateRequestIds)
+        $allRequestsIdsReferencedByResponses = array();
+        foreach($this->requestTable as $key => $request)
         {
-            $allRequestsIdsReferencedByResponses = array();
-            foreach($this->requestTable as $key => $request)
+            foreach ($request->getResponses() as $response)
             {
-                foreach ($request->getResponses() as $response)
+                $requestId = $response->getRequestId();
+                if (isset($requestId))
                 {
-                    $requestId = $response->getRequestId();
-                    if (isset($requestId))
-                    {
-                        $allRequestsIdsReferencedByResponses[$requestId] = true;
-                    }
+                    $allRequestsIdsReferencedByResponses[$requestId] = true;
                 }
             }
-            foreach($this->requestTable as $key => $request)
+        }
+        foreach($this->requestTable as $key => $request)
+        {
+            if(!isset($allRequestsIdsReferencedByResponses[$request->getRequestIdentifier()]))
             {
-                if(!isset($allRequestsIdsReferencedByResponses[$request->getRequestIdentifier()]))
-                {
-                    echo '<br>Found an unreferenced requestId:['.$request->getRequestIdentifier().']<br>';
-                }
+                echo '<br>Found an unreferenced requestId:['.$request->getRequestIdentifier().']<br>';
             }
         }
     }
 
-    public function hash($str) {
-        return md5($this->hashSalt.$str);
+    public function initializeSequenceTable(){
+        $this->hashRequestTable();
+        $this->checkForUnreferencedRequestIds();
+        if(SAMQSettings::isLogStatistics()){
+            Logger::info("Request Table Size: ".sizeof($this->requestTable));
+        }
     }
 
-    private function getRequestId($requestCode) {
-        if(!isset($requestCode)) {
+    private function logRequestEval($msg){
+        if(SAMQSettings::isLogRequestEvaluation()) Logger::info($msg);
+    }
+
+    public function hash($str){
+        return SAMQSettings::isEnableObfuscationHash()
+            ? md5($this->hashSalt . $str)
+            : $str;
+    }
+
+    private function getRequestId($requestCode)
+    {
+        if (!isset($requestCode)){
             return NULL;
         }
 
         $requestCode = strtolower($requestCode);
-        //var_dump($this->requestCodeTable);
         if(isset($this->requestCodeTable[$requestCode])) {
             return $this->requestCodeTable[$requestCode];
         }
         return NULL;
     }
 
-    public function getPostPath()
-    {
+    public function getPostPath() {
         return $this->postPath;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isDebugValidateRequestIds()
-    {
-        return $this->debug_validateRequestIds;
-    }
-
-    /**
-     * @param $debug_validateRequestIds bool
-     */
-    public function setDebugValidateRequestIds($debug_validateRequestIds)
-    {
-        $this->debug_validateRequestIds = $debug_validateRequestIds;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isDebugLogAdjustments()
-    {
-        return $this->debug_logAdjustments;
-    }
-
-    /**
-     * @param bool $debug_logAdjustments
-     */
-    public function setDebugLogAdjustments($debug_logAdjustments)
-    {
-        $this->debug_logAdjustments = $debug_logAdjustments;
     }
 }

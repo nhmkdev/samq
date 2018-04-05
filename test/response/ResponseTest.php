@@ -42,7 +42,7 @@ class ResponseTest extends TestAutoRunner
     }
 
     function getResponse(){
-        return Response::with('', null);
+        return Response::with('', NULL);
     }
 
     function checkState($response, $expectedState, $function){

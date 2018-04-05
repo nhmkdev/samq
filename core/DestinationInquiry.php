@@ -24,6 +24,8 @@
 // SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////
 
+// TODO: combine with InvalidRequestCode
+
 // highly questionable on the location of this file
 class DestinationInquiry
 {
