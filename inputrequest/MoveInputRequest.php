@@ -55,11 +55,11 @@ class MoveInputRequest extends InputRequest
 
     /**
      * MoveInputRequest constructor.
-     * @param $text string
-     * @param $northResult Response|string
-     * @param $westResult Response|string
-     * @param $eastResult Response|string
-     * @param $southResult Response|string
+     * @param $text string The text to display on the request
+     * @param $northResult Response|string The response to set or the destination request id
+     * @param $westResult Response|string The response to set or the destination request id
+     * @param $eastResult Response|string The response to set or the destination request id
+     * @param $southResult Response|string The response to set or the destination request id
      * @param $commandResponse Response
      * @param $additionalResponses Response[]|Response
      */
@@ -141,6 +141,9 @@ class MoveInputRequest extends InputRequest
         return new MoveInputRequest($text, $northResult, $westResult, $eastResult, $southResult, NULL, NULL);
     }
 
+    /**
+     * Updates the array of responses associated with this request
+     */
     private function updateResponses()
     {
         $updatedResponses = array(
@@ -258,8 +261,9 @@ class MoveInputRequest extends InputRequest
     }
 
     /**
-     * @param $direction string
-     * @param $requestId string
+     * Creates a move response in the specified direction
+     * @param $direction string The direction this response is intended for (n,s,e,w)
+     * @param $requestId string The id of the request to transition to
      * @return Response
      */
     public static function createMoveResponse($direction, $requestId){
@@ -332,11 +336,12 @@ class MoveInputRequest extends InputRequest
     }
 
     /**
-     * @param $responseObject Response
-     * @param $suffix string
+     * Gets the choice button html based on the input (and determines state)
+     * @param $responseObject Response The response to evaluate as a button
+     * @param $suffix string The suffix to append to the html if the Response is rendered
      * @return string
      */
-    public function getChoiceButton($responseObject, $suffix) {
+    protected function getChoiceButton($responseObject, $suffix) {
         if(!isset($responseObject))
         {
             return '';

@@ -27,7 +27,9 @@
 define('SAMQ_DESTINATION', 'destination');
 define('SAMQ_REQUESTID', 'requestid');
 define('SAMQ_REQUESTCODE', 'jumpcode');
-// TODO: this is not how this should be handled... SAMQ should be a static independent module :P
+define("ADJUSTMENT_DEFAULT_STORE", "default");
+
+// this is mostly useless
 define("DEBUG_MODE", true);
 
 if(DEBUG_MODE)

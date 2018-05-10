@@ -26,8 +26,6 @@
 
 // the kitchen sink of includes
 
-define("ADJUSTMENT_DEFAULT_STORE", "default");
-
 include_once dirname(__FILE__) . '/Logger.php';
 include_once dirname(__FILE__) . '/core.php';
 include_once dirname(__FILE__) . '/DestinationInquiry.php';

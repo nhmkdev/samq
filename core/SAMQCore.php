@@ -65,8 +65,8 @@ class SAMQCore
 
     /**
      * Adds a request to the engine and processes the id.
-     * @param $id string
-     * @param $request InputRequest
+     * @param $id string The identifier for the request
+     * @param $request InputRequest The request to add
      */
     public function addRequest($id, $request)
     {
@@ -88,10 +88,10 @@ class SAMQCore
         $this->requestCodeTable[$requestCode] = $requestId;
     }
 
-    // TODO: this method is a bit weird, investigate a better way to perform this op
     /**
-     * @param $id string
-     * @param $response Response
+     * Registers a response with the engine
+     * @param $id string identifier for the response
+     * @param $response Response the response to add
      */
     public function addResponse($id, $response) {
         // track the responses so adjustments can be made
@@ -136,7 +136,7 @@ class SAMQCore
 
             // eval if this is a response
             // todo/note: this is a hacky approach due to the R prefix
-            if(SAMQUtils::str_startswith($destinationId, "R"))
+            if(SAMQUtils::str_startswith($destinationId, 'R'))
             {
                 if(isset($this->responseTable[$destinationId])){
                     $response = $this->responseTable[$destinationId];

@@ -44,7 +44,6 @@ class ClearSessionAdjustment extends Adjustment
 
     protected function logAdjusment()
     {
-        global $samqCore;
         if(SAMQSettings::isLogAdjustments())
         {
             echo 'Clearing Entire Session!<br>';

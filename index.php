@@ -27,13 +27,13 @@
 // Start the session (if needed)
 session_start();
 
-define("SAMQ_POST_PATH", "/samq/");
+define("SAMQ_POST_PATH", substr(__DIR__, strlen($_SERVER['DOCUMENT_ROOT'])).'/');
 define("VALIDATE_REQUEST_IDS", false);
 
 include_once dirname(__FILE__) . '/core/core_include.php';
 
 SAMQSettings::setEnableObfuscationHash(false);
-SAMQSettings::enableFullDebug();
+//SAMQSettings::enableFullDebug();
 
 $samqCore = new SAMQCore('salty!', 'sample_01', SAMQ_POST_PATH);
 

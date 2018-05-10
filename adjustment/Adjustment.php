@@ -32,8 +32,8 @@ class Adjustment
 
     /**
      * Adjustment constructor.
-     * @param $variable string
-     * @param $newValue mixed
+     * @param $variable string The variable name
+     * @param $newValue mixed The value to set
      */
     function __construct($variable, $newValue) {
         $this->variable = $variable;
@@ -42,8 +42,8 @@ class Adjustment
 
     /**
      * Convenience method for constructing an Adjustment
-     * @param $variable string
-     * @param $newValue mixed
+     * @param $variable string The variable name
+     * @param $newValue mixed The value to set
      * @return Adjustment
      */
     public static function with($variable, $newValue)
@@ -53,9 +53,9 @@ class Adjustment
 
     /**
      * Convenience method for constructing an Adjustment
-     * @param $variable string
-     * @param $newValue mixed
-     * @param $session_store string
+     * @param $variable string The variable name
+     * @param $newValue mixed The value to set
+     * @param $session_store string The name of the store to make the adjustment in
      * @return Adjustment
      */
     public static function withStore($variable, $newValue, $session_store)
@@ -72,9 +72,18 @@ class Adjustment
         $_SESSION[$this->session_store][$this->variable] = $this->newValue;
     }
 
+    /**
+     * @param $session_store string The session store to use with this adjustment
+     * @return $this Adjustment
+     */
+    public function setStore($session_store)
+    {
+        $this->session_store = $session_store;
+        return $this;
+    }
+
     protected function logAdjusment()
     {
-        global $samqCore;
         if(SAMQSettings::isLogAdjustments())
         {
             echo 'Setting ['.$this->session_store.'] '.$this->variable.' to '.$this->newValue.'<br>';

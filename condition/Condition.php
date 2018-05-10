@@ -33,5 +33,15 @@ abstract class Condition
         $this->variable = $variable;
     }
 
+    /**
+     * @param $session_store string The session store to use with this Condition
+     * @return $this Condition
+     */
+    public function setStore($session_store)
+    {
+        $this->session_store = $session_store;
+        return $this;
+    }
+
     public abstract function isMet();
 }
